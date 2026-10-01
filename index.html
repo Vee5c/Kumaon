@@ -1,0 +1,599 @@
+<title>Kumaon & Co.</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@500;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg:#f7f4ee;
+    --surface:#ffffff;
+    --surface-2:#efe8d9;
+    --ink:#191712;
+    --ink-dim:#655e50;
+    --accent:#bf5a1f;
+    --accent-2:#1f5f96;
+    --line:rgba(21,19,15,0.14);
+    --header-bg:#ffffff;
+    --header-ink:#191712;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1c1712;
+      --surface:#221c15;
+      --surface-2:#282017;
+      --ink:#f0e6d3;
+      --ink-dim:#b3a68f;
+      --accent:#e2933c;
+      --accent-2:#5aa3e0;
+      --line:rgba(242,236,224,0.14);
+      --header-bg:#171310;
+      --header-ink:#f0e6d3;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1c1712;
+    --surface:#221c15;
+    --surface-2:#282017;
+    --ink:#f0e6d3;
+    --ink-dim:#b3a68f;
+    --accent:#e2933c;
+    --accent-2:#5aa3e0;
+    --line:rgba(242,236,224,0.14);
+    --header-bg:#171310;
+    --header-ink:#f0e6d3;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Source Serif 4', Georgia, serif;
+    padding-inline:0;
+    padding-block:0;
+    max-width:100%;
+    overflow-x:hidden;
+    position:relative;
+  }
+  /* film-grain overlay, so it reads shot on a camera rather than vector-flat */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:50;
+    opacity:0.05;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size:140px 140px;
+  }
+
+  .gutter{ padding-inline:20px; }
+  .wrap{ max-width:1040px; margin:0 auto; }
+  .bleed{ background:var(--surface-2); }
+
+  a{ color:inherit; }
+  h1,h2,h3{ font-family:'Poppins', system-ui, sans-serif; font-weight:700; text-wrap:balance; letter-spacing:-0.01em; line-height:1.05; margin:0; }
+
+  /* Header */
+  header.top{
+    background:var(--header-bg);
+    color:var(--header-ink);
+    position:sticky;
+    top:env(safe-area-inset-top, 0px);
+    z-index:10;
+    border-bottom:2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  .top-inner{
+    max-width:1040px;
+    margin:0 auto;
+    padding-inline:20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding-block:12px;
+  }
+  .wordmark{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:1.25rem;
+    letter-spacing:0.03em;
+    white-space:nowrap;
+  }
+  .wordmark span{ color:var(--accent); }
+  .top-logo{ height:34px; width:auto; flex:none; display:block; cursor:pointer; transition:transform 0.15s ease; }
+  .top-logo:hover{ transform:scale(1.08); }
+  .lightbox img.logo-lightbox-img{ background:var(--surface); padding:28px; max-width:min(320px, 100%); }
+
+  .top-right{ display:flex; align-items:center; gap:14px; }
+  .theme-toggle{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    border:1px solid color-mix(in srgb, var(--header-ink) 35%, transparent);
+    background:transparent;
+    color:var(--header-ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex:none;
+    padding:0;
+    transition:border-color 0.15s ease, transform 0.15s ease;
+  }
+  .theme-toggle:hover{ border-color:var(--accent); transform:scale(1.08); }
+  .theme-toggle svg{ width:16px; height:16px; }
+  .theme-toggle .icon-moon{ display:none; }
+  :root[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
+  :root[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
+
+  /* Hero */
+  .hero{
+    position:relative;
+    padding-block:64px 48px;
+    overflow:hidden;
+  }
+  .hero-mark{
+    position:absolute;
+    top:0%;
+    right:-6%;
+    left:auto;
+    bottom:auto;
+    transform:rotate(-4deg);
+    width:min(46vw, 420px);
+    opacity:0.08;
+    pointer-events:none;
+  }
+  .hero-inner{ position:relative; z-index:1; }
+  .hero h1{
+    font-size:clamp(2.9rem, 10vw, 6.2rem);
+    font-weight:700;
+    max-width:15ch;
+  }
+  .hero h1 em{
+    font-style:normal;
+    font-weight:700;
+    color:color-mix(in srgb, var(--accent) 55%, var(--ink) 45%);
+  }
+  .hero-sub{
+    margin-top:20px;
+    font-size:clamp(1.05rem, 2.6vw, 1.3rem);
+    color:var(--ink-dim);
+    max-width:40ch;
+    padding-left:2px;
+    border-left:3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    padding-left:16px;
+  }
+  .hero-meta{
+    display:flex;
+    gap:22px;
+    flex-wrap:wrap;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.76rem;
+    color:var(--ink-dim);
+    margin-top:32px;
+  }
+  .hero-meta strong{ color:var(--ink); font-weight:500; }
+
+  /* Section head */
+  .head-block{ margin-block:0 30px; }
+  .idx{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+    color:var(--accent);
+    letter-spacing:0.02em;
+    margin-bottom:6px;
+  }
+  .head-block h2{ font-size:clamp(2.1rem, 6vw, 3.3rem); }
+
+  section{ padding-block:44px; }
+  section + section{ border-top:1px solid var(--line); }
+
+  .lede{
+    max-width:58ch;
+    color:var(--ink-dim);
+    font-size:1.02rem;
+    line-height:1.55;
+    margin:0 0 26px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* Work — one featured piece, two minimal below */
+  .featured{
+    display:grid;
+    grid-template-columns:1.35fr 1fr;
+    gap:34px;
+    align-items:center;
+    margin-bottom:44px;
+  }
+  .featured h3{ font-size:clamp(2.1rem, 5vw, 3rem); margin:6px 0 10px; }
+  .clip-wrap{
+    border-radius:3px;
+    overflow:hidden;
+    background:#000;
+  }
+  video.clip{
+    width:100%;
+    height:auto;
+    display:block;
+    max-height:440px;
+    object-fit:contain;
+    background:#000;
+    transition:transform 0.4s ease;
+  }
+  .clip-wrap:hover video.clip{ transform:scale(1.015); }
+  .full-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.76rem;
+    color:var(--ink-dim);
+    text-decoration:none;
+    width:fit-content;
+    margin-top:12px;
+  }
+  .full-link:hover{ color:var(--accent); }
+  .full-link svg{ width:11px; height:11px; flex:none; }
+
+  .tag-line{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.76rem;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  .tag-line::before{ content:"— "; }
+
+  .reel-minor{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+    gap:30px;
+  }
+  .frame{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .frame h3{ font-size:1.7rem; font-weight:600; letter-spacing:0; margin:0; }
+  .frame p{ margin:0; color:var(--ink-dim); font-size:0.94rem; line-height:1.5; }
+
+  @media (max-width:760px){
+    .featured{ grid-template-columns:1fr; }
+  }
+
+  /* Approach — stacked editorial rows, not a card grid */
+  .pillar-list{ display:flex; flex-direction:column; position:relative; z-index:1; }
+  .pillar-row{
+    display:grid;
+    grid-template-columns:38px 1fr;
+    gap:20px;
+    padding-block:30px;
+    border-top:1px solid var(--line);
+  }
+  .pillar-row:first-child{ border-top:none; padding-top:0; }
+  .pillar-row:last-child{ padding-bottom:0; }
+  .pillar-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.85rem;
+    color:var(--accent);
+    line-height:1.6;
+  }
+  .pillar-row h3{ font-size:1.55rem; font-weight:600; letter-spacing:0; margin:0 0 8px; }
+  .pillar-row p{ margin:0; color:var(--ink-dim); font-size:0.96rem; line-height:1.55; max-width:58ch; }
+
+  /* Contact */
+  .contact{
+    background:var(--header-bg);
+    color:var(--header-ink);
+  }
+  .contact h2{ font-size:clamp(2.4rem, 8vw, 3.8rem); color:var(--header-ink); }
+  .contact-row{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    align-items:center;
+    margin-top:20px;
+  }
+  .cta{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--accent);
+    color:#15130f;
+    text-decoration:none;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:500;
+    font-size:0.9rem;
+    padding:13px 20px;
+    border-radius:3px;
+  }
+  .cta-secondary{
+    background:transparent;
+    color:var(--header-ink);
+    border:1px solid color-mix(in srgb, var(--header-ink) 35%, transparent);
+  }
+  .contact .note{ font-size:0.85rem; color:color-mix(in srgb, var(--header-ink) 65%, transparent); font-family:'IBM Plex Mono', monospace; width:100%; margin-top:14px; }
+  footer{
+    background:var(--header-bg);
+    color:color-mix(in srgb, var(--header-ink) 65%, transparent);
+    padding-block:18px 26px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    text-align:center;
+    border-top:1px solid color-mix(in srgb, var(--header-ink) 12%, transparent);
+  }
+  .founder-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding-block:22px;
+    border-top:1px solid color-mix(in srgb, var(--header-ink) 12%, transparent);
+  }
+  .founder-photo{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    object-fit:cover;
+    flex:none;
+    border:1px solid color-mix(in srgb, var(--header-ink) 25%, transparent);
+    cursor:pointer;
+    transition:transform 0.15s ease, border-color 0.15s ease;
+  }
+  .founder-photo:hover{ transform:scale(1.06); border-color:var(--accent); }
+  .founder-text{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:color-mix(in srgb, var(--header-ink) 65%, transparent);
+    line-height:1.4;
+  }
+  .founder-text strong{ color:var(--header-ink); font-weight:500; }
+
+  /* Photo lightbox */
+  .lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(11,10,9,0.92);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:32px 20px;
+    cursor:zoom-out;
+  }
+  .lightbox.is-open{ display:flex; }
+  .lightbox img{
+    max-width:min(420px, 100%);
+    max-height:80vh;
+    border-radius:8px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  }
+  .lightbox-close{
+    position:absolute;
+    top:18px;
+    right:20px;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.25);
+    color:#f7f4ee;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:1rem;
+  }
+
+  @media (max-width:480px){
+    .frame h3{ font-size:1.5rem; }
+    .top-logo{ height:28px; }
+    .pillar-row{ grid-template-columns:30px 1fr; }
+  }
+</style>
+
+<script>
+  (function(){
+    try{
+      var saved = localStorage.getItem('kumaon-theme');
+      var theme = saved || ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    }catch(e){
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+  function toggleTheme(){
+    var html = document.documentElement;
+    var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    try{ localStorage.setItem('kumaon-theme', next); }catch(e){}
+  }
+</script>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="wordmark">KUMAON<span>&amp;</span>CO.</div>
+    <div class="top-right">
+      <button class="theme-toggle" type="button" aria-label="Toggle dark mode" onclick="toggleTheme()">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <img class="top-logo" src="images/logo-mark.png" alt="Kumaon & Co. logo" onclick="document.getElementById('logo-lightbox').classList.add('is-open')">
+    </div>
+  </div>
+</header>
+
+<div class="wrap gutter">
+
+  <section class="hero">
+    <img class="hero-mark" src="images/logo-mark-large.png" alt="">
+    <div class="hero-inner">
+      <h1>You dream,<br><em>we deliver.</em></h1>
+      <p class="hero-sub">An independent video production house making ads, music videos and social content — shot, scored and cut in Bangalore.</p>
+      <div class="hero-meta">
+        <span><strong>Studio</strong> · independent, since 2025</span>
+        <span><strong>Based in</strong> · Bangalore</span>
+        <span><strong>Built on</strong> · music &amp; sound design</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="head-block">
+      <span class="idx">01 /</span>
+      <h2>Selected Work</h2>
+    </div>
+
+    <div class="featured">
+      <div class="clip-wrap">
+        <video class="clip" controls playsinline preload="metadata" poster="images/sato-poster.jpg">
+          <source src="videos/sato-clip.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div>
+        <span class="tag-line">Brand ad</span>
+        <h3>Sato — Holiday Campaign</h3>
+        <p>A festive spot built around gift-giving for the printer brand Sato — the kind of full-scope brand ad we take on end to end, from concept to final cut.</p>
+        <a class="full-link" href="https://drive.google.com/file/d/16I5jobArJcp1x1iJ8S7vZdLmFK4HgsQg/view" target="_blank" rel="noopener">
+          First 30s shown — full 38s cut on Drive
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="reel-minor">
+
+      <article class="frame">
+        <div class="clip-wrap">
+          <video class="clip" controls playsinline preload="metadata" poster="images/pizza-poster.jpg">
+            <source src="videos/pizza-clip.mp4" type="video/mp4">
+          </video>
+        </div>
+        <span class="tag-line">Fast turnaround</span>
+        <h3>Lyfe — The Pizza Cut</h3>
+        <p>Full concept-to-edit turnaround in about an hour, for the restaurant Lyfe — proof that quick work doesn't have to look quick.</p>
+        <a class="full-link" href="https://drive.google.com/file/d/1l7W9Ho2nRQrfd7b7A-412TYw4m-2O2jS/view" target="_blank" rel="noopener">
+          Full piece · also on Drive
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </a>
+      </article>
+
+      <article class="frame">
+        <div class="clip-wrap">
+          <video class="clip" controls playsinline preload="metadata" poster="images/reel-poster.jpg">
+            <source src="videos/reel-clip.mp4" type="video/mp4">
+          </video>
+        </div>
+        <span class="tag-line">Social / Reel</span>
+        <h3>Lyfe — Feed Reel</h3>
+        <p>Ongoing short-form content for Lyfe's Instagram feed, built to keep the page looking alive between bigger shoots.</p>
+        <a class="full-link" href="https://drive.google.com/file/d/1jq4HLu282Cq58-bW5d3nc3hBgYg9d5wb/view" target="_blank" rel="noopener">
+          Full piece · also on Drive
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </a>
+      </article>
+
+    </div>
+  </section>
+</div>
+
+<section id="approach" class="bleed">
+  <div class="wrap gutter">
+    <div class="head-block">
+      <span class="idx">02 /</span>
+      <h2>Approach</h2>
+    </div>
+    <div class="pillar-list">
+      <div class="pillar-row">
+        <span class="pillar-num">01</span>
+        <div>
+          <h3>An ear before an eye</h3>
+          <p>We got into this through music, not photography — so a cut usually starts with what it sounds like, and the picture catches up from there.</p>
+        </div>
+      </div>
+      <div class="pillar-row">
+        <span class="pillar-num">02</span>
+        <div>
+          <h3>Frames worth pausing on</h3>
+          <p>A push-in, a held wide shot, a cut on the beat — small decisions, but they're what separate a video from a moving photograph.</p>
+        </div>
+      </div>
+      <div class="pillar-row">
+        <span class="pillar-num">03</span>
+        <div>
+          <h3>Built around your brand, not ours</h3>
+          <p>Sato's ad and Lyfe's reels don't look alike on purpose — each one's shaped around what that brand already looks and sounds like, not a house style we reuse.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap gutter">
+  <section id="versatility">
+    <div class="head-block">
+      <span class="idx">03 /</span>
+      <h2>Beyond the usual reel</h2>
+    </div>
+    <p class="lede">Ads and social content are the regular work, but the same camera-and-sound setup carries over to formats that don't usually get this kind of attention — a podcast doesn't have to look like it was shot on a webcam, and a music video doesn't need a label budget to feel intentional.</p>
+
+    <div class="reel-minor">
+
+      <article class="frame">
+        <div class="clip-wrap">
+          <video class="clip" controls playsinline preload="metadata" poster="images/podcast-poster.jpg">
+            <source src="videos/podcast-clip.mp4" type="video/mp4">
+          </video>
+        </div>
+        <span class="tag-line">Podcast</span>
+        <h3>A Conversation, Shot Properly</h3>
+        <p>Clean audio, steady angles, lighting that doesn't scream "ring light" — the stuff that makes a podcast watchable, not just listenable.</p>
+      </article>
+
+      <article class="frame">
+        <div class="clip-wrap">
+          <video class="clip" controls playsinline preload="metadata" poster="images/metal-poster.jpg">
+            <source src="videos/metal-clip.mp4" type="video/mp4">
+          </video>
+        </div>
+        <span class="tag-line">Music video</span>
+        <h3>Metal, Cut to the Riff</h3>
+        <p>Fast cuts timed to the track, not just laid over it — built the same way we'd cut an ad, just louder.</p>
+      </article>
+
+    </div>
+  </section>
+</div>
+
+<section class="contact gutter">
+  <div class="wrap">
+    <h2>Let's make<br>something.</h2>
+    <div class="contact-row">
+      <a class="cta" href="https://wa.me/919686330424" target="_blank" rel="noopener">
+        WhatsApp — 96863 30424
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+      </a>
+      <a class="cta cta-secondary" href="https://www.instagram.com/kumaonco/" target="_blank" rel="noopener">
+        @kumaonco on Instagram
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+      </a>
+      <span class="note">WhatsApp preferred — quickest way to reach us</span>
+    </div>
+    <div class="founder-row">
+      <img class="founder-photo" src="images/vee-founder.jpg" alt="Vee, founder of Kumaon & Co." onclick="document.getElementById('founder-lightbox').classList.add('is-open')">
+      <div class="founder-text">Founded &amp; shot by <strong>Vee</strong></div>
+    </div>
+  </div>
+</section>
+
+<div class="lightbox" id="founder-lightbox" onclick="this.classList.remove('is-open')">
+  <button class="lightbox-close" aria-label="Close">✕</button>
+  <img src="images/vee-founder.jpg" alt="Vee, founder of Kumaon & Co.">
+</div>
+
+<div class="lightbox" id="logo-lightbox" onclick="this.classList.remove('is-open')">
+  <button class="lightbox-close" aria-label="Close">✕</button>
+  <img class="logo-lightbox-img" src="images/logo-mark-large.png" alt="Kumaon & Co. logo">
+</div>
+
+<footer>KUMAON &amp; CO. — BANGALORE</footer>
