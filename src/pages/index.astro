@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import LogoReveal from '../components/LogoReveal.astro';
+import ServicesFlat from '../components/ServicesFlat.astro';
+import Work from '../components/Work.astro';
+import Approach from '../components/Approach.astro';
+import Contact from '../components/Contact.astro';
+import Lightbox from '../components/Lightbox.astro';
+import Footer from '../components/Footer.astro';
+---
+<Layout>
+  <Header />
+  <main id="main" tabindex="-1">
+  <!-- the hero holds still only while the reveal slides over it; this wrapper is where that ends -->
+  <div class="hero-stage">
+    <Hero />
+    <LogoReveal />
+  </div>
+  <ServicesFlat />
+  <Work />
+  <Approach />
+  <Contact />
+  </main>
+  <Lightbox />
+  <Footer />
+</Layout>

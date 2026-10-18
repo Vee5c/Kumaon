@@ -1,0 +1,63 @@
+/* Hero (tagline + intro) */
+
+/* Hero: headline left, copy right, both resting on the headline's baseline */
+.hero{
+  /* the hero stays put while the orange section slides up over it */
+  position:sticky; top:var(--hdr-h, 86px); z-index:0;
+  background:var(--hero-bg);
+  display:grid;
+  grid-template-columns:auto minmax(260px, 380px);
+  justify-content:start;
+  align-items:end;
+  align-items:last baseline;
+  column-gap:clamp(20px, 2vw, 32px);
+  row-gap:32px;
+  min-height:min(65svh, 650px);
+  padding:clamp(40px, 8vh, 96px) var(--pad) clamp(40px, 7vh, 76px);
+}
+.hero h1{
+  font-size:clamp(3.2rem, 9vw, 8.2rem);   /* the largest and tallest thing in the hero: tagline > sub copy > peaks */
+  font-weight:700;
+  letter-spacing:-0.035em;
+  line-height:0.98;
+  text-wrap:normal;
+}
+.hero h1 span{ display:block; }
+.hero h1 .dim{ color:color-mix(in srgb, var(--ink) 54%, var(--hero-bg)); }   /* still the quiet half of the tagline, but 3:1 against the page */
+.hero-sub{
+  margin:0;
+  font-family:'Hanken Grotesk', system-ui, sans-serif;
+  font-size:clamp(1.05rem, 1.5vw, 1.45rem);
+  line-height:1.4;
+  color:color-mix(in srgb, var(--ink) 82%, var(--hero-bg));
+  max-width:none;
+}
+/* light emphasis that never rivals the tagline: who we are and where are bold, how we work is small caps-style capitals */
+.hero-sub strong{ font-weight:700; color:var(--ink); }
+.hero-sub .caps{ text-transform:uppercase; font-size:0.84em; letter-spacing:0.05em; font-weight:500; color:var(--ink); }
+/* four short lines, each one a complete idea */
+.hero-sub .ln{ display:block; white-space:nowrap; }
+/* one quiet line under the sub copy */
+.hero-meta{
+  margin:var(--sp-2) 0 0;
+  font-family:'Hanken Grotesk', system-ui, sans-serif;
+  font-size:0.85rem;
+  color:var(--ink-dim);
+}
+
+/* Hero line rise: starts visible, only shifts */
+@keyframes hero-rise{ from{ transform:translateY(0.35em); opacity:0.01; } to{ transform:none; opacity:1; } }
+.hero h1 span, .hero-side{ animation:hero-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.hero h1 span:nth-child(2){ animation-delay:0.09s; }
+.hero-side{ animation-delay:0.2s; }
+@media (prefers-reduced-motion:reduce){
+  .hero h1 span, .hero-side{ animation:none; }
+}
+
+@media (max-width:1199px){
+  /* below 1200px the copy has no room beside the tagline that the peaks leave clear, so it stacks under it (as on phones). The cream holds most of the first screen, so the orange and the peaks start low instead of filling the top half */
+  .hero{ grid-template-columns:1fr; align-items:start; align-content:center; min-height:calc(var(--vh, 100svh) * 0.66 - var(--hdr-h, 68px)); padding-bottom:calc(var(--ridge-h, 90px) * 0.9 + 24px); }
+  .hero-sub{ font-size:clamp(0.95rem, 4.3vw, 1.5rem); }
+  /* one column: the tagline fills the width so it still outranks the sub copy and the peaks */
+  .hero h1{ font-size:clamp(3.2rem, 18vw, 7rem); line-height:1; }
+}

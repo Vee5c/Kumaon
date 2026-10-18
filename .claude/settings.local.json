@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.claude/skills/impeccable/scripts/impeccable detect *)",
+      "Bash(python3 -)",
+      "Bash(awk -F: '{print $1\": \"$3}')"
+    ]
+  }
+}

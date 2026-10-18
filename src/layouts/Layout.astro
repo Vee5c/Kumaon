@@ -1,0 +1,87 @@
+---
+import '../styles/tokens.css';
+import '../styles/header.css';
+import '../styles/hero.css';
+import '../styles/logo-reveal.css';
+import '../styles/sections.css';
+import '../styles/work.css';
+const { title = 'Kumaon & Co.', description = 'An independent video production house in Bangalore making ads, music videos and social content — shot, scored and cut in-house.' } = Astro.props;
+const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : null;
+const shareImage = Astro.site ? new URL('/images/og-image.png', Astro.site).href : '/images/og-image.png';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#efe6d3" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Kumaon & Co." />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={shareImage} />
+    {pageUrl && <link rel="canonical" href={pageUrl} />}
+    {pageUrl && <meta property="og:url" content={pageUrl} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/bricolage-grotesque-latin-opsz.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/hanken-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <script is:inline>
+      /* Runs in <head> before first paint: sets the theme and flags animated mode, so nothing flashes. */
+      /* Arriving on a wave from another page: the screen starts covered in the wave's colour (ui.js then lets the wave carry on up and off). */
+      try{ var kw = sessionStorage.getItem('kc-wave'); if(kw){ var ki = kw.lastIndexOf('|'); if(ki > 0 && Date.now() - Number(kw.slice(ki + 1)) < 6000){ kw = kw.slice(0, ki); } else { kw = null; sessionStorage.removeItem('kc-wave'); } } if(kw){ document.documentElement.classList.add('kc-arriving'); document.documentElement.style.setProperty('--arrive', kw); } }catch(e){}
+      try{ if(!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) document.documentElement.classList.add('js-reveal'); }catch(e){}
+      /* One steady page height for the pinned scenes (--vh). On a phone the address bar slides away and back, so the height seen by the page
+         changes; the scenes use the largest height seen, so they always fill the screen and the scroll maths never shifts mid-scroll. */
+      (function(){
+        var root = document.documentElement, w = innerWidth, m = innerHeight, last = -1;
+        /* the tallest the screen can be (address bar hidden) is the large viewport height; a hidden probe reads it fresh each time, so the
+           scenes never have to grow while you scroll, and they follow the window if it is resized */
+        var pr = null;
+        try{ pr = document.createElement('div'); pr.style.cssText = 'position:fixed;top:0;left:0;width:0;height:100lvh;visibility:hidden;pointer-events:none'; root.appendChild(pr); }catch(e){ pr = null; }
+        var touch = false; try{ touch = matchMedia('(pointer: coarse)').matches; }catch(e){}
+        function set(){
+          w = innerWidth;
+          m = innerHeight;
+          if(touch && pr){ var big = pr.offsetHeight || 0; if(big > m) m = big; }
+          if(m !== last){ last = m; root.style.setProperty('--vh', m + 'px'); try{ dispatchEvent(new Event('vhchange')); }catch(e){} }
+        }
+        window.__vh = function(){ return m; };
+        set();
+        addEventListener('resize', set);
+        addEventListener('load', set);
+        if(window.visualViewport) visualViewport.addEventListener('resize', set);
+        addEventListener('orientationchange', function(){ setTimeout(function(){ w = -1; set(); }, 250); });
+      })();
+      (function(){
+        try{
+          var saved = localStorage.getItem('kumaon-theme');
+          var theme = saved || ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        }catch(e){
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+      function toggleTheme(){
+        var html = document.documentElement;
+        var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.classList.add('theme-flip');
+        html.setAttribute('data-theme', next);
+        setTimeout(function(){ html.classList.remove('theme-flip'); }, 120);
+        try{ localStorage.setItem('kumaon-theme', next); }catch(e){}
+      }
+    </script>
+  </head>
+  <body>
+    <slot />
+    <script>
+      import '../scripts/ui.js';
+      import '../scripts/logo-reveal.js';
+      import '../scripts/crossword.js';
+      import '../scripts/sound.js';
+    </script>
+  </body>
+</html>
