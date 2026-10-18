@@ -99,7 +99,7 @@ Each film has two files: the full one and a light one for phones, slow connectio
 
 `npm run build` writes the finished site to `dist/`. That folder is plain files, so it can be served by any static host. `dist/` is not committed (see `.gitignore`), so **pushing the source to GitHub does not by itself change a live site**: something has to run the build and publish `dist/`. Pick one way.
 
-### A. GitHub Pages, built by GitHub (recommended)
+### A. GitHub Pages, built by GitHub (workflow)
 
 1. Add `public/CNAME` containing just your domain (for example `www.example.com`), so the custom domain survives every deploy.
 2. Add this workflow as `.github/workflows/deploy.yml`:
@@ -144,18 +144,13 @@ jobs:
 3. In the repository on GitHub: Settings, then Pages, then set **Source** to **GitHub Actions**. After that, every push to `main` builds and publishes by itself.
 4. Domain: in GoDaddy's DNS, the domain should point at GitHub Pages (an `A` record set for the apex, or a `CNAME` for `www`, as in GitHub's custom-domain guide). If the old static site already worked from this domain, the DNS is already right and only steps 1 to 3 are needed. Turn on **Enforce HTTPS** once GitHub offers it.
 
-The workflow and `CNAME` are not in the repository yet; add them when you are ready to publish.
+The workflow (with manual publishing, see above) and `CNAME` are already in the repository.
 
-### Manual publish to GitHub Pages (no workflow)
+### Publish by hand from GitHub (the workflow in `.github/workflows/deploy.yml`)
 
-The domain's `public/CNAME` is already in place. To update the live site by hand: run `npm run build`, then publish the contents of `dist/` to the branch GitHub Pages serves (for example `gh-pages`), and leave the repository's Pages source set to that branch. A quick way, from the project folder:
+Every push and pull request is built automatically, so a broken site shows up straight away. Publishing only happens when you start it: open the repository's **Actions** tab, choose **Build and publish**, and press **Run workflow**. That builds the latest `main` and publishes it. One-time setup: Settings, then Pages, then set **Source** to **GitHub Actions**. The domain file `public/CNAME` is already in place. Pushing to `main` alone never changes the live site.
 
-```bash
-npm run build
-npx gh-pages -d dist
-```
-
-Pushing the source to `main` does not change the live site on its own.
+(The older way still works if you prefer it: `npm run build`, then `npx gh-pages -d dist`, with Pages set to serve the `gh-pages` branch. Use one way or the other, not both.)
 
 ### B. Build on your computer and upload
 
