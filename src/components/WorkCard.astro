@@ -1,0 +1,19 @@
+---
+import { media } from '../data/media.js';
+const { c, lead = false } = Astro.props;
+---
+<div
+  class:list={['card', c.tall ? 'is-tall' : 'is-wide']}
+  data-s={lead || !c.speed ? undefined : c.speed}
+  style={`--h:${c.h}; --ratio:${c.tall ? 0.5625 : 1.7778};${c.gap ? ` --m:${c.gap};` : ''}${lead || !c.align ? '' : ` align-self:flex-${c.align};`}`}
+>
+  <div class="card-media" role="button" tabindex="0" aria-label={`Play ${c.label}`}>
+    <video class="card-video" muted playsinline loop preload="metadata" data-at={c.at ?? 0} poster={media(c.poster)} data-src={media(c.video)} data-src-sm={media(c.video.replace(".mp4", "-sm.mp4"))} aria-label={c.label}></video>
+  </div>
+  <p class="card-cap">
+    {c.link
+      ? <a href={c.link.href} target="_blank" rel="noopener" class="card-title" aria-label={`${c.label}: full piece on Drive`}>{c.label} <span aria-hidden="true">↗</span></a>
+      : <span class="card-title">{c.label}</span>}
+    <span class="card-tag">{c.tag}</span>
+  </p>
+</div>

@@ -1,0 +1,171 @@
+/* Site header, nav, Contact-us pill, theme toggle */
+
+/* Header: the top padding scrolls away, leaving a compact bar */
+header.top{
+  --hdr-top:clamp(14px, 2.2vw, 26px);
+  background:transparent;
+  color:var(--ink);
+  /* fixed, not sticky: sticky headers drop out on iPhones when other pinned scenes share the page. It stays put on scroll,
+     so the bar is exactly the same height and place at the top and further down. */
+  position:fixed; top:0; left:0; width:min(100%, 100vw);   /* never wider than the page, even where the viewport is reported oddly */
+  z-index:100;
+}
+.top-spacer{ height:var(--hdr-h, 86px); }
+.top-inner{
+  padding-inline:var(--pad);
+  padding-block:var(--hdr-top) 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+}
+.brand{ display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; flex:none; }
+.brand .wordmark{ margin-left:-6px; }   /* the name sits a little closer to the theme button; the sound button after it moves along */
+.wordmark{
+  font-family:'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif;
+  font-weight:700;
+  font-size:clamp(1.25rem, 1.9vw, 1.6rem);
+  letter-spacing:0.02em;
+  white-space:nowrap;
+  line-height:1;
+}
+/* the blur is always on (invisible behind the solid cream) so only the colour ever transitions: animating backdrop-filter glitched on theme change */
+.wordmark{ background:var(--hero-bg); padding:9px 16px; border-radius:8px; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); transition:background-color 0.35s ease; }
+/* once the page has scrolled, the cream card thins to a frosted tint so it stops competing with the content */
+header.top.is-scrolled .wordmark, header.top.is-scrolled .nav{ background:color-mix(in srgb, var(--hero-bg) 30%, transparent); }
+/* while the theme flips, the header repaints in one step instead of cross-fading */
+.theme-flip header.top, .theme-flip header.top *, .theme-flip header.top *::before{ transition:none !important; }
+.wordmark{ display:block; color:inherit; text-decoration:none; cursor:pointer; }
+.wordmark:focus-visible{ outline:2px solid var(--focus); outline-offset:3px; }
+.wordmark span{ color:var(--c-blue); display:inline-block; transform-origin:50% 62%; transition:transform 0.9s cubic-bezier(0.25, 0.8, 0.25, 1); will-change:transform; }
+.wordmark:hover span, .wordmark:focus-visible span{ transform:rotate(-9deg) scale(1.08); }   /* the ampersand tips slowly, like a hat */
+/* skip link: out of sight until it takes keyboard focus */
+.skip{ position:fixed; left:var(--pad); top:10px; z-index:200; padding:10px 16px; border-radius:8px; background:var(--c-night); color:var(--c-cream); font:600 0.9rem 'Hanken Grotesk', system-ui, sans-serif; text-decoration:none; transform:translateY(-200%); transition:transform 0.3s var(--ease-out); }
+.skip:focus-visible{ transform:none; outline:2px solid var(--c-amber); outline-offset:2px; }
+:root[data-theme="dark"] .skip{ background:var(--c-cream); color:var(--c-night); }
+
+/* Nav: hover is colour only, nothing changes size. It gets the same backing as the name card, so page text never runs under the links. */
+.nav{
+  padding:2px 4px 2px 6px; border-radius:8px; background:var(--hero-bg);   /* 44px tall, the same as the name card */
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  transition:background-color 0.35s ease;
+  --cta-bg:var(--c-night); --cta-fg:var(--c-amber); --cta-hover:var(--c-blue-bright); --chip-fg:var(--c-cream);
+  display:flex; align-items:center; gap:0; white-space:nowrap;
+  font-family:'Hanken Grotesk', system-ui, sans-serif; font-size:0.95rem;
+}
+:root[data-theme="dark"] .nav{ --cta-bg:var(--c-cream); --cta-fg:var(--c-brown); --cta-hover:var(--c-blue-deep); --chip-fg:var(--c-cream); }
+.nav-link{
+  text-decoration:none; color:var(--ink);
+  padding:10px 20px; border-radius:5px;   /* the container's 8px minus its padding */
+  transition:background-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
+}
+.nav-link:hover, .nav-link:focus-visible{ background:var(--accent); color:var(--chip-fg); }
+.nav a:focus-visible, .nav button:focus-visible{ outline:2px solid var(--focus); outline-offset:3px; }
+
+/* Contact us: the arrow circle grows leftward into a pill that swallows the label */
+.nav-cta{
+  --ease:cubic-bezier(0.16, 1, 0.3, 1);
+  position:relative; display:inline-flex; align-items:center; height:38px;
+  margin-left:0; text-decoration:none; font-weight:500; color:var(--ink); isolation:isolate;
+}
+.nav-cta::before{
+  content:""; position:absolute; z-index:-1; top:0; right:0; bottom:0; width:38px;
+  border-radius:999px; background:var(--cta-bg);
+  transition:width 0.55s var(--ease);
+}
+.cta-label{ padding-left:20px; padding-right:4px; transition:color 0.45s var(--ease-out) 0.08s; }
+.cta-dot{ width:38px; height:38px; display:grid; place-items:center; color:var(--cta-fg); flex:none; transition:color 0.45s var(--ease-out) 0.08s; }
+.cta-dot svg{ width:14px; height:14px; }
+.nav-cta:hover::before, .nav-cta:focus-visible::before{ width:100%; }
+.nav-cta:hover .cta-label, .nav-cta:focus-visible .cta-label, .nav-cta:hover .cta-dot, .nav-cta:focus-visible .cta-dot{ color:var(--cta-hover); }   /* the logo blue (a deeper shade on the cream pill in dark mode, for contrast) */
+
+.theme-toggle{
+  width:36px; height:36px; margin:0;
+  border-radius:50%;
+  border:1px solid color-mix(in srgb, var(--ink) 28%, transparent);
+  background:transparent; color:var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; flex:none; padding:0;
+  transition:border-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
+}
+.theme-toggle:hover{ border-color:var(--accent); color:var(--accent); }
+.theme-toggle svg{ width:16px; height:16px; }
+/* the sun and the moon tip into place when the theme changes */
+.theme-toggle:not(.sound-btn) svg{ animation:icon-in 0.7s var(--ease-out) both; }
+@keyframes icon-in{ from{ opacity:0; transform:rotate(-70deg) scale(0.6); } to{ opacity:1; transform:none; } }
+/* sound: a speaker with a slash when off, with waves when on */
+.nav .sound-nav{ display:none; }   /* only on phones: see the narrow-screen block */
+.sound-btn .icon-snd-on{ display:none; }
+.sound-btn[aria-pressed="true"] .icon-snd-on{ display:block; }
+.sound-btn[aria-pressed="true"] .icon-snd-off{ display:none; }
+.theme-toggle.sound-btn{ width:30px; height:30px; border-color:transparent; opacity:0.5; transition:opacity 0.4s var(--ease-out), border-color 0.4s var(--ease-out), color 0.4s var(--ease-out); }
+.theme-toggle.sound-btn svg{ width:15px; height:15px; }
+.theme-toggle.sound-btn:hover, .theme-toggle.sound-btn:focus-visible{ opacity:1; border-color:color-mix(in srgb, var(--ink) 28%, transparent); }
+.theme-toggle.sound-btn[aria-pressed="true"]{ opacity:0.85; }   /* quiet either way: it is a switch, not a feature */
+.sound-btn.is-hint{ animation:sound-wiggle 1s var(--ease-out); }   /* points at the switch: when the pointer arrives on something that has a sound, or a play was refused */
+@keyframes sound-wiggle{ 0%, 100%{ opacity:0.5; transform:none; border-color:transparent; } 15%{ opacity:1; transform:rotate(-10deg) scale(1.2); border-color:color-mix(in srgb, var(--ink) 28%, transparent); } 35%{ opacity:1; transform:rotate(8deg) scale(1.2); border-color:color-mix(in srgb, var(--ink) 28%, transparent); } 55%{ opacity:1; transform:rotate(-5deg) scale(1.2); border-color:color-mix(in srgb, var(--ink) 28%, transparent); } 75%{ opacity:0.9; transform:rotate(2deg) scale(1.1); border-color:color-mix(in srgb, var(--ink) 28%, transparent); } }   /* it grows only to the size of the theme button next to it (30px to 36px) and wears the same ring */
+@media (prefers-reduced-motion:reduce){ .sound-btn.is-hint{ animation:none; } }
+.theme-toggle .icon-moon{ display:none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
+:root[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
+
+/* menu button: only on narrow screens, where the nav links are tucked away */
+.menu-btn{ display:none; }
+.menu{ display:none; }
+@media (max-width:680px){
+  .brand .sound-btn{ display:none; }   /* on phones the switch moves to sit beside the menu button */
+  .nav .sound-nav{ display:flex; margin-right:2px; }
+  .nav .nav-link, .nav-cta{ display:none; }
+  .menu .nav-link, .menu .nav-cta{ display:inline-flex; }
+  .menu-btn{
+    width:36px; height:36px; padding:0; margin:0; border-radius:50%; flex:none; cursor:pointer;
+    border:0; background:transparent; color:var(--ink);
+    display:flex; flex-direction:column; align-items:flex-end; justify-content:center; gap:3.5px; padding-right:10px;
+    transition:border-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
+  }
+  .menu-btn:hover, .menu-btn:focus-visible{ color:var(--accent); }
+  .menu-btn span{ display:block; width:16px; height:2px; border-radius:2px; background:currentColor; }
+  .menu-btn span:nth-child(2){ width:10px; }
+  /* the links keep their nav styling, stacked and right-aligned with no box; the hover colour shows on tap */
+  .menu{
+    --cta-bg:var(--c-night); --cta-fg:var(--c-amber); --cta-hover:var(--c-blue-bright); --chip-fg:var(--c-cream);
+    position:absolute; z-index:11; right:var(--pad); top:calc(100% - 4px);
+    display:flex; flex-direction:column; align-items:flex-end; gap:4px;
+    font-family:'Hanken Grotesk', system-ui, sans-serif; font-size:0.95rem; white-space:nowrap;
+    opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity 0.22s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  :root[data-theme="dark"] .menu{ --cta-bg:var(--c-cream); --cta-fg:var(--c-brown); --cta-hover:var(--c-blue-deep); --chip-fg:var(--c-cream); }
+  .menu[hidden]{ display:none; }
+  .menu.is-open{ opacity:1; transform:none; pointer-events:auto; }
+  /* each link gets the same frost as the name card, so nothing behind it competes with the text */
+  /* one card behind all the links, frosted exactly as the individual links were: the cream at 30% over a blur */
+  .menu{ padding:6px; border-radius:12px; background:color-mix(in srgb, var(--hero-bg) 30%, transparent); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); box-shadow:0 8px 24px rgba(28,23,18,0.14); gap:2px; }
+  .menu .nav-link, .menu .nav-cta{ background:transparent; }
+  .menu .nav-link{ border-radius:8px; padding-inline:16px; }
+  .menu .nav-link:hover, .menu .nav-link:focus-visible, .menu .nav-link:active{ background:var(--accent); color:var(--chip-fg); }
+  .menu .nav-cta{ border-radius:999px; }
+  .menu .nav-cta:active::before{ width:100%; }
+  .menu .nav-cta:active .cta-label, .menu .nav-cta:active .cta-dot{ color:var(--cta-hover); }
+}
+@media (max-width:360px){ .wordmark{ padding:8px 10px; font-size:1.15rem; } .top-inner{ gap:12px; } }   /* the narrowest phones: keep name, switches and menu on one row */
+@media (prefers-reduced-motion:reduce){ .nav *, .nav *::before{ transition:none !important; } .theme-toggle svg{ animation:none; } .wordmark span{ transition:none; } }
+
+/* behind the transparent header the page shows the hero cream, not the plain page colour */
+body{ background-image:linear-gradient(var(--hero-bg), var(--hero-bg)); background-repeat:no-repeat; background-size:100% 200px; }
+main:focus{ outline:none; }
+
+/* touch targets: the round buttons look 36px but respond over a 44px area */
+.theme-toggle, .menu-btn{ position:relative; }
+.theme-toggle::after, .menu-btn::after{ content:""; position:absolute; inset:-5px; border-radius:50%; }
+@media (max-width:680px){ .menu .nav-link, .menu .nav-cta{ min-height:44px; align-items:center; } }
+
+
+/* a single music note for the cursor wherever there is a sound to find: the finished logo, the temple, the mountain and its snowfall (white outline so it reads on both themes) */
+:root{ --cursor-music:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg stroke='white' stroke-width='4.500' stroke-linejoin='round' stroke-linecap='round' fill='white'%3E%3Cpath d='M19 23V6q1 6 7 8q-4-1-5-3.500' fill='none'/%3E%3Cellipse cx='14.500' cy='23.500' rx='5' ry='3.800' transform='rotate(-20 14.500 23.500)'/%3E%3C/g%3E%3Cg stroke='%231c1712' stroke-width='2.200' stroke-linejoin='round' stroke-linecap='round' fill='%231c1712'%3E%3Cpath d='M19 23V6q1 6 7 8q-4-1-5-3.500' fill='none'/%3E%3Cellipse cx='14.500' cy='23.500' rx='5' ry='3.800' transform='rotate(-20 14.500 23.500)'/%3E%3C/g%3E%3C/svg%3E") 16 16, pointer; }
+.reveal-logo.is-complete, .bg-temple svg, .bg-temple svg *, .ridge-hit, .ridge-air{ cursor:var(--cursor-music); }
+
+/* touch: the small header controls keep their look but get a 44px hit area */
+@media (pointer:coarse){
+  .theme-toggle, .menu-btn{ position:relative; }
+  .theme-toggle::after, .menu-btn::after{ content:""; position:absolute; left:50%; top:50%; width:max(100%, 44px); height:max(100%, 44px); transform:translate(-50%, -50%); }
+}

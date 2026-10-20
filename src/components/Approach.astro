@@ -1,0 +1,65 @@
+---
+/* the services crossword: a hand-checked grid where every word crosses another. [word, row, col, A(cross)/D(own)] */
+const raw = [['MARKETING',5,0,'A'],['DESIGN',0,7,'D'],['WEBSITE',3,3,'A'],['MEDIA',1,1,'D'],['MUSIC',1,1,'A'],['ADS',0,6,'A']];
+/* trim the empty columns so the grid is only as wide as the words */
+const minC = Math.min(...raw.map(([, , c]) => c));
+const placed = raw.map(([w, r, c, d]) => [w, r, c - minC, d] as [string, number, number, string]);
+const COLS = Math.max(...placed.map(([w, , c, d]) => d === 'A' ? c + w.length : c + 1));
+const ROWS = Math.max(...placed.map(([w, r, , d]) => d === 'D' ? r + w.length : r + 1));
+/* the squares left blank: one per word, all different letters, none at a crossing, so each word is easy to see */
+const gaps = new Set(['5-5','3-5','2-7','1-2','3-1','0-6']);
+const letters = new Map<string,string>();
+const words = placed.map(([w, r, c, d]) => {
+  const cells = [...w].map((ch, i) => { const rr = d === 'A' ? r : r + i, cc = d === 'A' ? c + i : c; letters.set(rr + '-' + cc, ch); return rr + '-' + cc; });
+  return { w, cells };
+});
+---
+<section id="approach" class="bleed">
+  <div class="approach gutter">
+    <div class="approach-copy">
+      <h2 class="approach-title">Approach</h2>
+      <div class="pillar-list">
+        <div class="pillar-row">
+          <div>
+            <h3>Built around your brand, not ours</h3>
+            <p>Sato's ad and Lyfe's reels don't look alike on purpose. Each is shaped around its brand, not a house style we reuse.</p>
+          </div>
+        </div>
+        <div class="pillar-row">
+          <div>
+            <h3>An ear before an eye</h3>
+            <p>We got into this through music, not photography — so a cut usually starts with what it sounds like, and the picture catches up from there.</p>
+          </div>
+        </div>
+        <div class="pillar-row">
+          <div>
+            <h3>Frames worth pausing on</h3>
+            <p>A push-in, a held wide shot, a cut on the beat — small decisions, but they're what separate a video from a moving photograph.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="xw xw-rule" id="xw" data-words={JSON.stringify(words)}>
+      <p class="xw-title">Fill in the blanks to see what we do.</p>
+      <div class="xw-grid" style={`--cols:${COLS}; --rows:${ROWS}`} role="group" aria-label="Crossword of our services">
+        <div class="xw-caps" aria-hidden="true"></div>
+        {Array.from({ length: COLS * ROWS }, (_, i) => {
+          const r = Math.floor(i / COLS), c = i % COLS, k = r + '-' + c, l = letters.get(k);
+          const edge = (c === COLS - 1 ? ' lr' : '') + (r === ROWS - 1 ? ' lb' : '');
+          if (!l) return <span class={'cell void' + edge} aria-hidden="true"></span>;
+          return gaps.has(k)
+            ? <button class={'cell gap' + edge} type="button" data-k={k} data-l={l} aria-label="Empty square"></button>
+            : <span class={'cell pre' + edge} data-k={k} data-l={l}>{l}</span>;
+        })}
+      </div>
+      <div class="xw-end">
+        <div class="xw-bar">
+          <div class="xw-tray" aria-label="Letters to place"></div>
+          <button class="xw-skip" type="button">Skip</button>
+        </div>
+        <p class="xw-win" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>

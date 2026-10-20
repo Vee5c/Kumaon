@@ -1,0 +1,63 @@
+/* Pinned logo reveal and the services scene (pointer, labels, dots). Driven by js/logo-reveal.js */
+
+/* Logo reveal: sticky stage inside a taller section; scroll drives the fade (see script) */
+.reveal{
+  --paper:#efe6d3;
+  --logo-orange:#c8741f;
+  --ku:#c8741f;
+  height:830svh;
+  position:relative;
+  padding:0;
+  border:0;
+}
+.reveal-pin{
+  position:sticky; top:0;
+  height:100svh;
+  padding-top:62px; box-sizing:border-box;
+  display:grid; place-items:center;
+  background:var(--logo-orange);
+  overflow:hidden;
+}
+.reveal-logo{ overflow:visible;
+  height:min(calc((100svh - 76px) / 1.7), 54vw); width:auto;
+  display:block; will-change:transform;
+}
+
+/* Services: the wordmark becomes a small blue pointer that travels the logo's edge and stops at each service */
+.ptr, .lbl, .svc-dots{ display:none; }
+.js-reveal .ptr, .js-reveal .lbl{ display:block; }
+.ptr{ position:absolute; left:0; top:0; width:0; height:0; opacity:0; pointer-events:none; will-change:transform; }
+.ptr-dot{ position:absolute; left:-17px; top:-17px; width:34px; height:34px; border-radius:50%; background:#008fc3; }
+.ptr-tail{ position:absolute; left:-24px; top:-24px; width:150px; height:48px; transform-origin:24px 24px; overflow:visible; }
+.ptr-tail path{ fill:#008fc3; }
+.wm-text, .wm-static{ display:none; font-family:'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif; font-weight:800; letter-spacing:0.005em; color:var(--paper); line-height:1; white-space:nowrap; pointer-events:none; }
+.wm-text{ position:absolute; left:0; top:0; opacity:0; will-change:transform; }
+.js-reveal .wm-text{ display:block; }
+.wm-text .l{ display:inline-block; }
+.wm-dot{ position:absolute; left:50%; top:50%; width:0; height:0; border-radius:50%; background:#008fc3; transform:translate(-50%,-50%); }
+.wm-static{ display:block; position:absolute; left:50%; bottom:16%; transform:translateX(-50%); font-size:clamp(2rem, 6vw, 3.4rem); }
+.js-reveal .wm-static{ display:none; }
+.lbl{ position:absolute; left:0; top:0; opacity:0; pointer-events:none; width:max-content; max-width:min(420px, 84vw); color:var(--paper); }
+.lbl h3{
+  margin:0; font-family:'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif; font-weight:700;
+  font-size:clamp(1.7rem, 3.4vw, 2.8rem); line-height:1.05; letter-spacing:-0.015em; color:inherit; white-space:nowrap;
+}
+.lbl p{ margin:6px 0 0; font-family:'Hanken Grotesk', system-ui, sans-serif; font-weight:500; font-size:clamp(1rem, 1.3vw, 1.15rem); line-height:1.4; }
+.svc-dots{ position:absolute; right:clamp(14px, 2.4vw, 34px); top:50%; transform:translateY(-50%); list-style:none; margin:0; padding:0; flex-direction:column; gap:12px; opacity:0; }
+.js-reveal .svc-dots{ display:flex; }
+.svc-dots li{ width:8px; height:8px; border-radius:50%; background:var(--paper); opacity:0.4; transition:opacity 0.25s ease; }
+.svc-dots li.on{ opacity:1; }
+@media (max-width:820px){
+  .svc-dots{ right:auto; left:50%; top:auto; bottom:4%; transform:translateX(-50%); flex-direction:row; }
+}
+.svc-flat{ display:block; background:var(--logo-orange, #c8741f); color:#efe6d3; padding-block:56px; }
+.js-reveal .svc-flat{ display:none; }
+.svc-flat h2{ font-size:clamp(2rem, 5vw, 3rem); margin:0 0 24px; }
+.svc-flat article{ margin-bottom:22px; }
+.svc-flat h3{ font-size:1.4rem; margin:0 0 6px; }
+.svc-flat p{ margin:0; max-width:46ch; line-height:1.5; }
+
+@media (prefers-reduced-motion:reduce){
+  .reveal{ height:auto; }
+  .reveal-pin{ position:static; height:min(100svh, 900px); }
+}

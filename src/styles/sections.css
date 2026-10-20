@@ -1,0 +1,348 @@
+/* Section heads, Approach, Contact, footer, lightboxes (the Work scroller lives in work.css) */
+
+
+section{ padding-block:44px; }
+section + section{ border-top:1px solid var(--line); }
+.bleed{ border-top:0; }
+
+/* Approach: the three ideas on the left, the services crossword on the right. The heading and the game's prompt share a baseline, and the dividers are drawn by hand like the grid */
+#approach{ padding-block:clamp(72px, 11vw, 150px); }
+.approach{ display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); column-gap:clamp(32px, 6vw, 96px); align-items:start; }
+.approach-copy{ display:contents; }   /* the title sits alone on the first row; the points and the crossword start together on the second */
+.approach-copy > .approach-title{ grid-column:1; grid-row:1; }
+.approach-copy > .pillar-list{ grid-column:1; grid-row:2; }
+.approach > .xw{ grid-column:2; grid-row:2; }
+/* the same size as "Let's make something." */
+.approach-title{ font-size:var(--display-sm); font-weight:800; line-height:0.92; letter-spacing:-0.04em; margin:0 0 var(--sp-7); }
+.pillar-list{ display:flex; flex-direction:column; position:relative; z-index:1; }
+.pillar-row{ position:relative; padding-block:clamp(18px, 2.2vw, 26px) clamp(10px, 1.3vw, 16px); }   /* less room under the text than under the divider, so each divider belongs to the point below it */
+.pillar-row:first-child{ padding-top:0; }
+.pillar-row:last-child{ padding-bottom:0; }
+/* a wobbly rule: a stretched hand-drawn stroke used as a mask, so it takes the theme's accent colour */
+.pillar-row + .pillar-row::before, .xw-rule::before{ content:""; position:absolute; left:0; right:0; top:0; height:8px; background:color-mix(in srgb, var(--accent) 34%, transparent);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 8' preserveAspectRatio='none'%3E%3Cpath d='M0 4.6C40 3 80 5.4 130 4C190 2.4 230 5.2 290 4.2C340 3.4 372 4.8 400 3.8' fill='none' stroke='black' stroke-width='1' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 8' preserveAspectRatio='none'%3E%3Cpath d='M0 4.6C40 3 80 5.4 130 4C190 2.4 230 5.2 290 4.2C340 3.4 372 4.8 400 3.8' fill='none' stroke='black' stroke-width='1' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat; }
+.pillar-row h3{ font-size:clamp(1.25rem, 1.9vw, 1.6rem); font-weight:700; letter-spacing:-0.02em; line-height:1.15; margin:0 0 var(--sp-3); }
+.pillar-row p{ margin:0; color:var(--ink-dim); font-size:clamp(0.97rem, 1.1vw, 1.05rem); line-height:1.6; max-width:46ch; }
+@media (min-width:901px){ .xw-rule::before{ display:none; } }
+@media (max-width:900px){
+  .approach{ grid-template-columns:1fr; row-gap:var(--sp-5); align-items:start; }
+  .approach-copy > .pillar-list, .approach > .xw{ grid-column:1; }
+  /* the crossword is for bigger screens: it needs drag room, and on a phone the three points are what matters */
+  .xw{ display:none; }
+}
+
+/* the services crossword: no board. Lines are drawn by hand around the words only, the whole grid sits a little crooked, and a finished word turns into solid tiles that pop in from the letter just placed */
+.xw{ --k-bg:var(--c-night); --k-fg:var(--c-cream); justify-self:end; width:100%; max-width:380px; --ink-box:color-mix(in srgb, var(--ink) 45%, transparent); }
+:root[data-theme="dark"] .xw{ --k-bg:var(--c-cream); --k-fg:var(--c-night); }
+.xw-title{ text-wrap:balance; margin:0 0 var(--sp-5); font-size:clamp(1rem, 1.3vw, 1.15rem); font-weight:600; line-height:1.4; letter-spacing:-0.005em; }
+.xw-grid{ container-type:inline-size; position:relative; display:grid; grid-template-columns:repeat(var(--cols), 1fr); grid-auto-rows:1fr; aspect-ratio:calc(var(--cols) / var(--rows)); transform:rotate(-1.6deg); touch-action:manipulation; }
+.xw-lines{ position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; overflow:visible; fill:none; stroke:var(--ink); opacity:0.22; stroke-width:1.4;   /* the whole layer is faded, not each stroke, so crossings don't build up into darker dots */
+  stroke-linecap:butt; stroke-linejoin:round; }
+.xw-lines path{ vector-effect:non-scaling-stroke; }
+.xw .cell{ box-sizing:border-box; position:relative; z-index:1; display:grid; place-items:center; padding:0; border:0; background:none; font-family:'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif; font-weight:800; font-size:clamp(1rem, 4.4vw, 1.4rem); font-size:calc(100cqw / var(--cols) * 0.62); line-height:1; color:var(--ink); }
+.xw .cell.pre, .xw .cell.gap.filled{ transition:color 0.4s ease; }
+.xw .cell.gap{ margin:9%; border-radius:8px; background:color-mix(in srgb, var(--logo-orange, var(--c-orange)) 20%, transparent); cursor:pointer; transition:background-color 0.35s var(--ease-out), transform 0.35s var(--ease-out); }
+.xw.has-pick .cell.gap:not(.filled){ background:color-mix(in srgb, var(--logo-orange, var(--c-orange)) 34%, transparent); }
+.xw .cell.gap.over{ background:color-mix(in srgb, var(--logo-orange, var(--c-orange)) 50%, transparent); transform:scale(1.12); }
+.xw .cell.gap.filled{ margin:0; border-radius:0; background:none; cursor:default; animation:xw-pop 0.5s var(--ease-out); }
+.xw .cell.gap.nope{ animation:xw-nope 0.4s ease; }
+.xw-caps{ position:absolute; inset:0; z-index:0; pointer-events:none; }
+.xw .cell.is-tile, .xw .cell.gap.filled.is-tile{ margin:7%; border-radius:8px; --tt:0deg; transform:rotate(var(--tt)); animation:xw-wild 0.9s var(--ease-out) both; animation-delay:var(--d, 0s); }
+.xw .cell.is-tile, .xw .cell.gap.filled.is-tile{ background:var(--t1); color:var(--c-night); }
+.xw .cell.is-split, .xw .cell.gap.filled.is-split{ background:linear-gradient(135deg, var(--t1) 50%, var(--t2) 50%); }
+.xw .cell.has-k, .xw .cell.gap.filled.has-k{ box-shadow:inset 0 0 0 2px var(--c-night); }   /* a cream tile gets a near-black edge, so it holds its shape on the cream page */
+.xw-end{ display:grid; margin-top:var(--sp-5); min-height:72px; }   /* the tray and the finished message share one spot, so nothing jumps when the game ends */
+.xw-end > *{ grid-area:1 / 1; align-self:start; }
+.xw-bar{ display:flex; align-items:center; gap:14px; }
+.xw-tray{ flex:1; min-width:0; display:flex; flex-wrap:nowrap; gap:6px; min-height:36px; }
+.xw .tile{ --tilt:0deg; flex:1 1 0; min-width:0; max-width:36px; aspect-ratio:1; display:grid; place-items:center; padding:0; border:0; border-radius:9px; color:var(--c-night); font:800 1.05rem/1 'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif; cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none; transform:rotate(var(--tilt)); box-shadow:0 1px 0 rgba(28,23,18,0.22), 0 3px 6px rgba(28,23,18,0.1); transition:transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out); }
+.xw .tile.t0{ background:var(--logo-orange, var(--c-orange)); }
+.xw .tile.t1{ background:var(--c-blue); }
+.xw .tile.t2{ background:var(--k-bg); color:var(--k-fg); }
+.xw .tile:hover{ transform:translateY(-3px) rotate(calc(var(--tilt) * -1.5)) scale(1.06); }
+.xw .tile.is-selected{ transform:translateY(-5px) rotate(0deg) scale(1.12); box-shadow:0 2px 0 rgba(28,23,18,0.28), 0 10px 16px rgba(28,23,18,0.2); }
+.xw .tile.is-dragging{ opacity:0.25; transform:rotate(var(--tilt)) scale(0.9); }
+.xw .tile.nope{ animation:xw-nope-t 0.45s ease; }
+.xw .tile.ghost{ position:fixed; left:0; top:0; z-index:300; margin:0; pointer-events:none; cursor:grabbing; box-shadow:0 3px 0 rgba(28,23,18,0.25), 0 18px 26px rgba(28,23,18,0.3); transition:none; will-change:transform; }
+.xw .tile:focus-visible, .xw .cell.gap:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+.xw-skip, .xw-again{ flex:none; padding:7px 14px; border:1px solid color-mix(in srgb, var(--ink) 28%, transparent); border-radius:999px; background:transparent; color:var(--ink); font:inherit; font-size:0.85rem; cursor:pointer; white-space:nowrap; transition:border-color 0.4s var(--ease-out), color 0.4s var(--ease-out); }
+.xw-skip:hover, .xw-skip:focus-visible, .xw-again:hover, .xw-again:focus-visible{ border-color:var(--accent); color:var(--accent); }
+.xw.is-done .xw-bar{ display:none; }
+.xw-win{ margin:0; font-size:0.95rem; font-weight:600; display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; }
+.xw-win:empty{ display:none; }
+.xw-win a{ color:inherit; text-decoration-thickness:1px; text-underline-offset:3px; }
+.xw-again{ font-weight:400; }
+@keyframes xw-wild{ 0%{ transform:scale(0.2) rotate(-40deg); } 35%{ transform:scale(1.3) rotate(16deg); } 55%{ transform:scale(0.88) rotate(-12deg); } 75%{ transform:scale(1.08) rotate(6deg); } 100%{ transform:scale(1) rotate(var(--tt)); } }
+/* the noticing nudge: the blocks hop in a wave, the blanks pulse */
+.xw.is-nudge .tile:not(.ghost){ animation:xw-hop 0.7s var(--ease-out) both; animation-delay:calc(var(--i, 0) * 0.09s + 0.15s); }
+.xw.is-nudge .cell.gap:not(.filled){ animation:xw-pulse 1s ease-in-out 2 both; animation-delay:0.2s; }
+@keyframes xw-hop{ 0%, 100%{ transform:translateY(0) rotate(var(--tilt)); } 40%{ transform:translateY(-12px) rotate(calc(var(--tilt) * -2.5)) scale(1.08); } }
+@keyframes xw-pulse{ 0%, 100%{ transform:scale(1); } 50%{ transform:scale(1.14); background:color-mix(in srgb, var(--logo-orange, var(--c-orange)) 42%, transparent); } }
+@keyframes xw-pop{ 0%{ transform:scale(0.3) rotate(-14deg); } 100%{ transform:none; } }
+@keyframes xw-nope-t{ 20%{ transform:translateX(-4px) rotate(-6deg); } 50%{ transform:translateX(4px) rotate(6deg); } 80%{ transform:translateX(-2px) rotate(-3deg); } }
+@keyframes xw-nope{ 20%{ transform:translateX(-3px); } 50%{ transform:translateX(3px); } 80%{ transform:translateX(-2px); } }
+@keyframes xw-cap{ from{ clip-path:circle(0 at var(--ox, 50%) var(--oy, 50%)); } to{ clip-path:circle(150% at var(--ox, 50%) var(--oy, 50%)); } }
+@media (prefers-reduced-motion:reduce){ .xw *{ animation:none !important; transition:none !important; } }
+
+/* Contact */
+.contact{
+  position:relative; overflow:hidden;
+  /* a compact closing section; the top of the screen still shows a little of Approach at the very bottom of the page */
+  --footer-h:64px;
+  /* the blue runs on down behind the footer line, which sits over it with no background of its own */
+  min-height:calc(var(--vh, 100svh) * 0.64 - 66px + var(--footer-h));
+  padding-bottom:var(--footer-h);
+  display:flex; align-items:center;
+  border-top:0;
+  --header-ink:var(--c-cream);
+  background:var(--water);
+  color:var(--header-ink);
+}
+.contact-river{ position:relative; height:clamp(64px, 10.5vw, 156px); margin-top:0; margin-bottom:-2px; background:var(--surface-2); pointer-events:none; }
+.contact-river > svg{ position:absolute; left:-2.5%; top:0; width:105%; height:100%; display:block; animation:edge-sway 16s ease-in-out infinite alternate; }   /* the river edge sways to and fro, very slightly (a little wider than the block, so no gap shows at the sides) */
+@keyframes edge-sway{ from{ transform:translate3d(-2%, 0, 0); } to{ transform:translate3d(2%, 0, 0); } }
+@media (prefers-reduced-motion:reduce){ .contact-river > svg{ animation:none; } }
+.contact-river > svg path{ fill:var(--water); }   /* only the river edge, not the fish that share the block */
+.contact h2{ margin-left:-0.05em;   /* the L's side bearing otherwise pushes the heading's ink right of the buttons' edge */
+  font-size:var(--display-sm); font-weight:800; letter-spacing:-0.04em; line-height:0.92; color:var(--header-ink); }
+.contact-row{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin-top:clamp(24px, 3vw, 36px);
+  row-gap:12px;
+}
+.cta{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:var(--accent);
+  color:var(--c-night);
+  text-decoration:none;
+  font-family:'Hanken Grotesk', system-ui, sans-serif;
+  font-weight:600;
+  font-size:0.98rem;
+  padding:14px 22px;
+  border-radius:999px;
+  transition:background-color 0.55s var(--ease-out), color 0.55s var(--ease-out), border-color 0.55s var(--ease-out);
+}
+/* hover: a dark pill with a warm label, the same in light and dark mode */
+.contact{ --cta-bg:var(--c-night); --cta-fg:var(--c-amber); }
+.contact .cta:hover, .contact .cta:focus-visible{ background:var(--cta-bg); color:var(--cta-fg); }
+.cta svg{ transition:transform 0.55s var(--ease-out); }
+@media (prefers-reduced-motion:reduce){ .cta, .cta svg{ transition:none; } }
+.cta:hover svg, .cta:focus-visible svg{ transform:translate(2px, -2px); }
+.cta:focus-visible{ outline:2px solid var(--c-cream); outline-offset:3px; }
+/* the two buttons wear the logo colours on the blue: orange for WhatsApp (the main way in), cream for Instagram */
+.contact .cta{ background:var(--c-cream); color:var(--c-night); }   /* the main action is the lightest thing on the blue: 14:1 inside, and it stands clear of the water */
+.contact .cta-secondary{ background:var(--c-orange); }
+.contact .note{ font-size:0.88rem; color:var(--on-water); font-family:'Hanken Grotesk', system-ui, sans-serif; width:100%; margin-top:4px; padding-left:22px; }   /* starts under the button label, not under the pill's curved edge */
+/* phones: the two buttons stack at one width, label left and arrow right, with a clear step down to the note */
+@media (max-width:560px){
+  .contact-row{ flex-direction:column; align-items:stretch; gap:var(--sp-3); }
+  .contact-row .cta{ justify-content:space-between; }
+  .contact .note{ margin-top:var(--sp-2); }
+}
+footer .bangalore-time{ font-variant-numeric:tabular-nums; }
+footer .bangalore-time:not(:empty)::before{ content:" · "; white-space:pre; }
+footer{
+  --header-ink:var(--c-cream);
+  background:transparent;
+  color:var(--on-water);
+  position:relative; z-index:2;
+  height:64px; margin-top:-64px;   /* the contact section's --footer-h */
+  padding:0 var(--pad) 24px;
+  display:flex; align-items:flex-end; justify-content:flex-end;
+  font-family:'Hanken Grotesk', system-ui, sans-serif;
+  font-size:0.72rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  text-align:right;
+}
+.founder-row{
+  border-top:0 !important;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-top:clamp(28px, 3.4vw, 40px);
+}
+.founder-photo{
+  width:72px; height:72px; padding:0; flex:none;
+  border-radius:50%; overflow:hidden; cursor:zoom-in;
+  background:#5a4130; border:0;   /* a tone from the photo, so the circle is never an empty dark disc while it loads */
+  box-shadow:0 6px 18px rgba(28,23,18,0.28);
+  transition:transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.founder-photo img{ display:block; width:100%; height:100%; object-fit:cover; object-position:42% 30%; transform:scale(1.12); transition:transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.founder-photo:hover, .founder-photo:focus-visible{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(28,23,18,0.34); }
+.founder-photo:hover img, .founder-photo:focus-visible img{ transform:scale(1.2); }
+.founder-photo:focus-visible{ outline:2px solid var(--on-water); outline-offset:3px; }
+.founder-text{
+  display:flex; align-items:center; gap:8px; cursor:pointer;
+  font-family:'Hanken Grotesk', system-ui, sans-serif;
+  font-size:clamp(1rem, 1.3vw, 1.15rem);
+  color:var(--on-water);
+  line-height:1.3;
+}
+.founder-text strong{ color:var(--on-water); font-weight:800; }
+.founder-arrow{ flex:none; opacity:0.7; transition:transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; }
+.founder-row:hover .founder-arrow{ transform:translateX(4px); opacity:1; }
+
+/* Photo lightbox */
+.lightbox{
+  position:fixed;
+  inset:0;
+  background:rgba(28,23,18,0.94);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+  padding:32px 20px;
+  cursor:zoom-out;
+}
+.lightbox.is-open{ display:flex; }
+.lightbox figure{ margin:0; display:flex; flex-direction:column; align-items:center; gap:28px; max-width:min(415px, 100%); cursor:default; animation:lb-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+/* a polaroid: cream card, thin top and sides, deep bottom edge for the name, set at a slight tilt */
+.polaroid{ background:var(--c-cream); padding:16px 16px 0; border-radius:14px; transform:rotate(-2.5deg); box-shadow:0 2px 6px rgba(28,23,18,0.3), 0 24px 50px rgba(28,23,18,0.5); }
+.polaroid img{ display:block; width:100%; aspect-ratio:4 / 4.6; max-height:72vh; object-fit:cover; object-position:42% 40%; border-radius:6px; background:var(--c-night); filter:saturate(0.92) contrast(1.02); }
+.polaroid-photo{ position:relative; border-radius:6px; overflow:hidden; background:var(--c-night); }
+.polaroid-photo img{ border-radius:0; }
+/* developing: the picture surfaces out of a dark, greenish murk the way an instant photo does, slowly and without ever stepping.
+   Only opacity and colour change (no blur), so every frame is cheap. */
+.polaroid-murk{ position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 90% at 50% 38%, #5d726d 0%, #3a4845 55%, #232c2a 100%); opacity:0; }
+.lightbox.is-open .polaroid-murk{ animation:polaroid-murk 2.6s cubic-bezier(0.45, 0.05, 0.25, 1) both; }
+.lightbox.is-open .polaroid-photo img{ animation:polaroid-colour 2.6s cubic-bezier(0.45, 0.05, 0.25, 1) both; }
+@keyframes polaroid-murk{ 0%{ opacity:1; } 18%{ opacity:0.96; } 100%{ opacity:0; } }
+@keyframes polaroid-colour{ 0%{ filter:saturate(0) contrast(0.55); } 100%{ filter:saturate(0.92) contrast(1.02); } }
+@media (prefers-reduced-motion:reduce){ .lightbox.is-open .polaroid-murk, .lightbox.is-open .polaroid-photo img{ animation:none; } }
+.polaroid-links{ display:flex; justify-content:flex-end; align-items:center; gap:6px; padding:10px 0 12px; }
+.polaroid-name{ margin-right:auto; padding-left:2px; font-family:'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif; font-weight:700; font-size:1.9rem; letter-spacing:-0.035em; line-height:1; color:var(--c-night); }   /* the tagline's typeface */
+.polaroid-links a{ width:44px; height:44px; display:grid; place-items:center; border-radius:50%; color:var(--c-night); transition:background-color 0.45s var(--ease-out), color 0.45s var(--ease-out); }
+.polaroid-links a:hover, .polaroid-links a:focus-visible{ background:var(--c-night); color:var(--c-amber); outline:none; }
+.polaroid-links a[aria-label*="Instagram"]:hover, .polaroid-links a[aria-label*="Instagram"]:focus-visible{ color:var(--c-blue-bright); }   /* the logo blue, on the dark disc */
+.polaroid-links svg{ width:25px; height:25px; }
+@keyframes lb-in{ from{ opacity:0; transform:translateY(16px) scale(0.97); } to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce){ .lightbox figure{ animation:none; } .founder-photo, .founder-photo img, .founder-arrow{ transition:none; } }
+.lightbox-close{
+  position:absolute;
+  top:14px;
+  right:16px;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:rgba(239,230,211,0.12);
+  border:1px solid rgba(239,230,211,0.3);
+  color:var(--c-cream);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  padding:0;
+}
+.lightbox-close svg{ width:16px; height:16px; }
+
+
+/* water behind the closing section */
+.contact .wrap{ position:relative; z-index:1; width:100%; max-width:none; margin:0; }   /* full width, so the heading lines up with the other two */
+.water{ position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.ripples{ position:absolute; left:0; top:0; width:200%; height:100%; fill:none; stroke:var(--c-cream); stroke-opacity:0.11; stroke-width:1.3; vector-effect:non-scaling-stroke; }
+.ripples path{ vector-effect:non-scaling-stroke; stroke-linecap:round; }
+.ripples-a{ animation:water-flow 52s linear infinite; }
+@keyframes water-flow{ from{ transform:translate3d(-50%, 0, 0); } to{ transform:translate3d(0, 0, 0); } }   /* the wave lines drift to the right, the way the diyas and the boat do */
+.mover{ position:absolute; left:0; top:var(--top); width:var(--size); animation:water-pass var(--dur) linear var(--delay) infinite; }
+.mover b{ display:block; }
+.mover svg{ display:block; width:100%; overflow:visible; }
+.diya b{ animation:water-bob 4.2s ease-in-out infinite; }
+.boat{ opacity:0.85; }
+/* while the WhatsApp button is hovered, focused or pressed, the glow around each diya's flame warms up: a soft fade and a small swell, nothing else moves */
+:root[data-theme="dark"] .diya svg circle{ opacity:0.95; transform:scale(1.2); }   /* night: the diyas are lit by themselves */
+.contact .wrap, .contact-row{ pointer-events:none; }   /* the full-width blocks must not cover the diyas floating behind them */
+.contact .cta, .contact .founder-row{ pointer-events:auto; }
+.diya, .diya b{ pointer-events:auto; }   /* a diya lights up when you hover it, like it does for the WhatsApp button */
+.diya svg circle{ transform-box:fill-box; transform-origin:center; opacity:0.7; transition:opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
+.contact:has(.contact-row .cta:not(.cta-secondary):is(:hover, :focus-visible, :active), .diya:hover) .diya svg circle{ opacity:1; transform:scale(1.35); }
+.boat b{ animation:water-bob 6.5s ease-in-out infinite; }
+@keyframes water-pass{ 0%{ opacity:0; transform:translate3d(50vw, 0, 0); } 3%{ opacity:1; } 97%{ opacity:1; } 100%{ opacity:0; transform:translate3d(108vw, 0, 0); } }
+@keyframes water-bob{ 0%, 100%{ transform:translateY(0) rotate(-2.5deg); } 50%{ transform:translateY(7px) rotate(2.5deg); } }
+
+
+/* fish that leap out of the blue, over the river edge and into the cream above, then dive back in. Three layers keep the motion smooth:
+   the outer one carries it sideways at a steady pace, the next lifts it in a rising-then-falling arc, the inner one turns the nose
+   up, level and down. Rings mark where it leaves and re-enters. */
+.contact-river{ --rh:clamp(64px, 10.5vw, 156px); overflow-x:clip; }   /* fish may leap up out of the block, but never widen the page */
+.jumper{ position:absolute; left:var(--left); top:calc(var(--rh) * var(--y) + 4px); width:var(--size); height:calc(var(--size) * 0.478); z-index:2; }
+.jumper b, .jumper em, .jumper span{ display:block; position:absolute; left:0; top:0; width:100%; font-style:normal; }
+.jumper b{ opacity:0; transform-origin:50% calc(var(--size) * 0.26); will-change:transform, opacity; animation:fish-jump var(--dur) linear var(--delay) infinite; }   /* one animation moves, tilts and fades the fish, so the three can never drift apart */
+.jumper svg{ display:block; width:100%; height:calc(var(--size) * 0.478); transform:scaleX(-1); overflow:visible; }   /* the head leads: it faces the way it travels */
+.jumper u, .jumper s{ position:absolute; top:calc(var(--size) * 0.3); width:calc(var(--size) * 1.1); height:calc(var(--size) * 0.3); margin-left:calc(var(--size) * -0.3); border:1.5px solid rgba(239, 230, 211, 0.8); border-radius:50%; opacity:0; text-decoration:none; }
+.jumper u{ left:0; animation:ring-out var(--dur) ease-out var(--delay) infinite; }
+.jumper s{ left:calc(var(--size) * 3.4); top:calc(var(--size) * 0.3 + var(--rh) * var(--dy)); animation:ring-in var(--dur) ease-out var(--delay) infinite; }
+@keyframes fish-jump{
+  0%{ opacity:0; transform:translate(0, calc(var(--size) * 0.3000)) rotate(-64.72deg); }
+  38.00%{ opacity:0.000; transform:translate(calc(var(--size) * 0.0000), calc(var(--size) * 0.3000 + var(--rh) * var(--dy) * 0.0000)) rotate(-64.72deg); }
+  38.71%{ opacity:0.139; transform:translate(calc(var(--size) * 0.0708), calc(var(--size) * 0.1531 + var(--rh) * var(--dy) * 0.0208)) rotate(-63.77deg); }
+  39.42%{ opacity:0.278; transform:translate(calc(var(--size) * 0.1417), calc(var(--size) * 0.0125 + var(--rh) * var(--dy) * 0.0417)) rotate(-62.74deg); }
+  40.12%{ opacity:0.417; transform:translate(calc(var(--size) * 0.2125), calc(var(--size) * -0.1219 + var(--rh) * var(--dy) * 0.0625)) rotate(-61.65deg); }
+  40.83%{ opacity:0.556; transform:translate(calc(var(--size) * 0.2833), calc(var(--size) * -0.2500 + var(--rh) * var(--dy) * 0.0833)) rotate(-60.46deg); }
+  41.54%{ opacity:0.694; transform:translate(calc(var(--size) * 0.3542), calc(var(--size) * -0.3719 + var(--rh) * var(--dy) * 0.1042)) rotate(-59.18deg); }
+  42.25%{ opacity:0.833; transform:translate(calc(var(--size) * 0.4250), calc(var(--size) * -0.4875 + var(--rh) * var(--dy) * 0.1250)) rotate(-57.80deg); }
+  42.96%{ opacity:0.972; transform:translate(calc(var(--size) * 0.4958), calc(var(--size) * -0.5969 + var(--rh) * var(--dy) * 0.1458)) rotate(-56.31deg); }
+  43.67%{ opacity:1.000; transform:translate(calc(var(--size) * 0.5667), calc(var(--size) * -0.7000 + var(--rh) * var(--dy) * 0.1667)) rotate(-54.69deg); }
+  44.38%{ opacity:1.000; transform:translate(calc(var(--size) * 0.6375), calc(var(--size) * -0.7969 + var(--rh) * var(--dy) * 0.1875)) rotate(-52.93deg); }
+  45.08%{ opacity:1.000; transform:translate(calc(var(--size) * 0.7083), calc(var(--size) * -0.8875 + var(--rh) * var(--dy) * 0.2083)) rotate(-51.01deg); }
+  45.79%{ opacity:1.000; transform:translate(calc(var(--size) * 0.7792), calc(var(--size) * -0.9719 + var(--rh) * var(--dy) * 0.2292)) rotate(-48.92deg); }
+  46.50%{ opacity:1.000; transform:translate(calc(var(--size) * 0.8500), calc(var(--size) * -1.0500 + var(--rh) * var(--dy) * 0.2500)) rotate(-46.64deg); }
+  47.21%{ opacity:1.000; transform:translate(calc(var(--size) * 0.9208), calc(var(--size) * -1.1219 + var(--rh) * var(--dy) * 0.2708)) rotate(-44.14deg); }
+  47.92%{ opacity:1.000; transform:translate(calc(var(--size) * 0.9917), calc(var(--size) * -1.1875 + var(--rh) * var(--dy) * 0.2917)) rotate(-41.42deg); }
+  48.62%{ opacity:1.000; transform:translate(calc(var(--size) * 1.0625), calc(var(--size) * -1.2469 + var(--rh) * var(--dy) * 0.3125)) rotate(-38.45deg); }
+  49.33%{ opacity:1.000; transform:translate(calc(var(--size) * 1.1333), calc(var(--size) * -1.3000 + var(--rh) * var(--dy) * 0.3333)) rotate(-35.22deg); }
+  50.04%{ opacity:1.000; transform:translate(calc(var(--size) * 1.2042), calc(var(--size) * -1.3469 + var(--rh) * var(--dy) * 0.3542)) rotate(-31.70deg); }
+  50.75%{ opacity:1.000; transform:translate(calc(var(--size) * 1.2750), calc(var(--size) * -1.3875 + var(--rh) * var(--dy) * 0.3750)) rotate(-27.90deg); }
+  51.46%{ opacity:1.000; transform:translate(calc(var(--size) * 1.3458), calc(var(--size) * -1.4219 + var(--rh) * var(--dy) * 0.3958)) rotate(-23.81deg); }
+  52.17%{ opacity:1.000; transform:translate(calc(var(--size) * 1.4167), calc(var(--size) * -1.4500 + var(--rh) * var(--dy) * 0.4167)) rotate(-19.17deg); }
+  52.88%{ opacity:1.000; transform:translate(calc(var(--size) * 1.4875), calc(var(--size) * -1.4719 + var(--rh) * var(--dy) * 0.4375)) rotate(-14.57deg); }
+  53.58%{ opacity:1.000; transform:translate(calc(var(--size) * 1.5583), calc(var(--size) * -1.4875 + var(--rh) * var(--dy) * 0.4583)) rotate(-12.85deg); }
+  54.29%{ opacity:1.000; transform:translate(calc(var(--size) * 1.6292), calc(var(--size) * -1.4969 + var(--rh) * var(--dy) * 0.4792)) rotate(-5.33deg); }
+  55.00%{ opacity:1.000; transform:translate(calc(var(--size) * 1.7000), calc(var(--size) * -1.5000 + var(--rh) * var(--dy) * 0.5000)) rotate(5.60deg); }
+  55.71%{ opacity:1.000; transform:translate(calc(var(--size) * 1.7708), calc(var(--size) * -1.4969 + var(--rh) * var(--dy) * 0.5208)) rotate(4.65deg); }
+  56.42%{ opacity:1.000; transform:translate(calc(var(--size) * 1.8417), calc(var(--size) * -1.4875 + var(--rh) * var(--dy) * 0.5417)) rotate(4.53deg); }
+  57.12%{ opacity:1.000; transform:translate(calc(var(--size) * 1.9125), calc(var(--size) * -1.4719 + var(--rh) * var(--dy) * 0.5625)) rotate(15.67deg); }
+  57.83%{ opacity:1.000; transform:translate(calc(var(--size) * 1.9833), calc(var(--size) * -1.4500 + var(--rh) * var(--dy) * 0.5833)) rotate(22.09deg); }
+  58.54%{ opacity:1.000; transform:translate(calc(var(--size) * 2.0542), calc(var(--size) * -1.4219 + var(--rh) * var(--dy) * 0.6042)) rotate(23.41deg); }
+  59.25%{ opacity:1.000; transform:translate(calc(var(--size) * 2.1250), calc(var(--size) * -1.3875 + var(--rh) * var(--dy) * 0.6250)) rotate(27.69deg); }
+  59.96%{ opacity:1.000; transform:translate(calc(var(--size) * 2.1958), calc(var(--size) * -1.3469 + var(--rh) * var(--dy) * 0.6458)) rotate(31.70deg); }
+  60.67%{ opacity:1.000; transform:translate(calc(var(--size) * 2.2667), calc(var(--size) * -1.3000 + var(--rh) * var(--dy) * 0.6667)) rotate(35.22deg); }
+  61.38%{ opacity:1.000; transform:translate(calc(var(--size) * 2.3375), calc(var(--size) * -1.2469 + var(--rh) * var(--dy) * 0.6875)) rotate(38.45deg); }
+  62.08%{ opacity:1.000; transform:translate(calc(var(--size) * 2.4083), calc(var(--size) * -1.1875 + var(--rh) * var(--dy) * 0.7083)) rotate(41.42deg); }
+  62.79%{ opacity:1.000; transform:translate(calc(var(--size) * 2.4792), calc(var(--size) * -1.1219 + var(--rh) * var(--dy) * 0.7292)) rotate(44.14deg); }
+  63.50%{ opacity:1.000; transform:translate(calc(var(--size) * 2.5500), calc(var(--size) * -1.0500 + var(--rh) * var(--dy) * 0.7500)) rotate(46.64deg); }
+  64.21%{ opacity:1.000; transform:translate(calc(var(--size) * 2.6208), calc(var(--size) * -0.9719 + var(--rh) * var(--dy) * 0.7708)) rotate(48.92deg); }
+  64.92%{ opacity:1.000; transform:translate(calc(var(--size) * 2.6917), calc(var(--size) * -0.8875 + var(--rh) * var(--dy) * 0.7917)) rotate(51.01deg); }
+  65.62%{ opacity:1.000; transform:translate(calc(var(--size) * 2.7625), calc(var(--size) * -0.7969 + var(--rh) * var(--dy) * 0.8125)) rotate(52.93deg); }
+  66.33%{ opacity:1.000; transform:translate(calc(var(--size) * 2.8333), calc(var(--size) * -0.7000 + var(--rh) * var(--dy) * 0.8333)) rotate(54.69deg); }
+  67.04%{ opacity:0.972; transform:translate(calc(var(--size) * 2.9042), calc(var(--size) * -0.5969 + var(--rh) * var(--dy) * 0.8542)) rotate(56.31deg); }
+  67.75%{ opacity:0.833; transform:translate(calc(var(--size) * 2.9750), calc(var(--size) * -0.4875 + var(--rh) * var(--dy) * 0.8750)) rotate(57.80deg); }
+  68.46%{ opacity:0.694; transform:translate(calc(var(--size) * 3.0458), calc(var(--size) * -0.3719 + var(--rh) * var(--dy) * 0.8958)) rotate(59.18deg); }
+  69.17%{ opacity:0.556; transform:translate(calc(var(--size) * 3.1167), calc(var(--size) * -0.2500 + var(--rh) * var(--dy) * 0.9167)) rotate(60.46deg); }
+  69.88%{ opacity:0.417; transform:translate(calc(var(--size) * 3.1875), calc(var(--size) * -0.1219 + var(--rh) * var(--dy) * 0.9375)) rotate(61.65deg); }
+  70.58%{ opacity:0.278; transform:translate(calc(var(--size) * 3.2583), calc(var(--size) * 0.0125 + var(--rh) * var(--dy) * 0.9583)) rotate(62.74deg); }
+  71.29%{ opacity:0.139; transform:translate(calc(var(--size) * 3.3292), calc(var(--size) * 0.1531 + var(--rh) * var(--dy) * 0.9792)) rotate(63.77deg); }
+  72.00%{ opacity:0.000; transform:translate(calc(var(--size) * 3.4000), calc(var(--size) * 0.3000 + var(--rh) * var(--dy) * 1.0000)) rotate(64.72deg); }
+  100%{ opacity:0; transform:translate(calc(var(--size) * 3.4), calc(var(--size) * 0.3000 + var(--rh) * var(--dy))) rotate(64.72deg); }
+}
+@keyframes ring-out{ 0%, 36%{ opacity:0; transform:scale(0.3); } 38.5%{ opacity:0.85; transform:scale(0.5); } 56%, 100%{ opacity:0; transform:scale(1.7); } }
+@keyframes ring-in{ 0%, 70%{ opacity:0; transform:scale(0.3); } 72.5%{ opacity:0.9; transform:scale(0.5); } 88%, 100%{ opacity:0; transform:scale(1.8); } }
+@media (max-width:820px){ .jumper ~ .jumper{ display:none; } }
+@media (prefers-reduced-motion:reduce){ .ripples, .mover, .mover b, .jumper b, .jumper u, .jumper s{ animation:none !important; } .mover, .shine, .jumper{ display:none; } }
+
+/* phones: the text fills most of the width, so keep the water calm behind it and the one fish clear of the edge */
+@media (max-width:820px){
+  .mover.boat, .mover.diya:first-of-type{ display:none; }
+  .jumper{ --size:34px !important; left:56% !important; }
+}
+
+/* animations that are off screen are paused (set by ui.js) */
+.is-paused, .is-paused *, .is-paused *::before, .is-paused *::after{ animation-play-state:paused !important; }
+
