@@ -152,6 +152,10 @@ Every push and pull request is built automatically, so a broken site shows up st
 
 (The older way still works if you prefer it: `npm run build`, then `npx gh-pages -d dist`, with Pages set to serve the `gh-pages` branch. Use one way or the other, not both.)
 
+### Netlify
+
+`netlify.toml` tells Netlify what to do: run `npm run build` and serve `dist/` with Node 22. If the Netlify site was set up for the old single-file page, check Site configuration, then Build and deploy, and clear any old build command or publish folder, so this file is used. A page-not-found after deploying usually means Netlify is serving the repository's root folder instead of `dist/`.
+
 ### B. Build on your computer and upload
 
 Run `npm run build`, then upload the contents of `dist/` to the hosting for the domain (GoDaddy's file manager or FTP), replacing the old files. This works for GoDaddy shared hosting; nothing runs automatically.
