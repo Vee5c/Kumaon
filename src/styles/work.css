@@ -186,7 +186,8 @@ vsc-controller, .vsc-controller{ display:none !important; }
 /* tablets and phones: the temple stands in the empty space under the Metal film and moves with it (the script moves it there) */
 @media (max-width:820px) and (min-height:521px){
   .bg-temple:not(.card-temple){ display:none; }
-  .card-temple{ position:absolute; left:50%; top:100%; transform:translateX(-50%); margin-top:calc(var(--u) * 3); width:calc(var(--u) * 24); height:calc(var(--u) * 30); overflow:hidden; pointer-events:none; }
+  .card-temple{ position:absolute; left:40%; top:100%; transform:translateX(-50%); margin-top:calc(var(--u) * 3); width:calc(var(--u) * 24); height:calc(var(--u) * 30); pointer-events:none; }   /* a little left of centre; the script sets margin-top so its foot meets the bottom of the screen (the pinned screen clips what runs on below) */
+  .card-temple .t-petals, .card-temple .t-fireflies{ left:0; bottom:calc(var(--u) * -9.9 * 0.72); height:calc(var(--u) * 41.7 * 0.72); }
   .card-temple svg{ position:absolute; left:0; bottom:calc(var(--u) * -9.9 * 0.72); height:calc(var(--u) * 41.7 * 0.72); width:auto; }
 }
 
