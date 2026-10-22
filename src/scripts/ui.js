@@ -67,7 +67,8 @@ try{
   const hd = document.querySelector('header.top');
   if(hd){
     const set = () => document.documentElement.style.setProperty('--hdr-h', hd.offsetHeight + 'px');
-    set(); addEventListener('resize', set); addEventListener('load', set);
+    let hdrW = innerWidth;
+    set(); addEventListener('resize', () => { if(innerWidth !== hdrW){ hdrW = innerWidth; set(); } }); addEventListener('load', set);
   }
 }
 

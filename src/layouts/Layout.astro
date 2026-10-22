@@ -49,6 +49,9 @@ const shareImage = Astro.site ? new URL('/images/og-image.png', Astro.site).href
           w = innerWidth;
           m = innerHeight;
           if(touch && pr){ var big = pr.offsetHeight || 0; if(big > m) m = big; }
+          /* some phones (Safari with its floating bar, Chrome with its toolbars) report a large viewport that still stops short of the real bottom of the screen:
+             the pinned scenes would end above it, with whatever is underneath showing. The screen itself is the truest height, within reason. */
+          if(touch){ try{ var full = innerHeight >= innerWidth ? Math.max(screen.width, screen.height) : Math.min(screen.width, screen.height); if(full > m) m = Math.min(full, innerHeight + 200); }catch(e){} }
           if(m !== last){ last = m; root.style.setProperty('--vh', m + 'px'); try{ dispatchEvent(new Event('vhchange')); }catch(e){} }
         }
         window.__vh = function(){ return m; };

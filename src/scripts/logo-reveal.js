@@ -212,7 +212,11 @@
   }
   function queue(){ if(!queued){ queued = true; requestAnimationFrame(update); } }
   window.addEventListener('scroll', queue, { passive:true });
-  window.addEventListener('resize', function(){ rest = null; needMeasure = true; queue(); });
+  var lastW = window.innerWidth;
+  window.addEventListener('resize', function(){
+    if(window.innerWidth === lastW){ queue(); return; }   /* only the height changed: a phone's toolbars sliding away or back while scrolling. Nothing to measure again (and doing so each frame made the scene shake) */
+    lastW = window.innerWidth; rest = null; needMeasure = true; queue();
+  });
   window.addEventListener('vhchange', function(){ rest = null; queue(); });
   window.addEventListener('load', function(){ rest = null; queue(); });
   update();

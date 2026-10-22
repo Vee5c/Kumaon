@@ -136,18 +136,36 @@ const count = String(cards.length).padStart(2, '0');
     const lyfe = track.querySelector(':scope > .card.is-wide');   /* the Metal film: the first wide card in the row */
     let templeHolder = null;
     const templeExtras = templeLayer ? [...templeLayer.querySelectorAll('.t-petals, .t-fireflies')] : [];   /* the day's petals and the night's fireflies go where the temple goes */
+    /* the stone of each shrine is given a long plain extension below its base (same colours), so on a phone it can run down to the bottom of the screen
+       however far the toolbars have slid, instead of ending in a flat edge */
+    let stoneExtended = false;
+    function extendStone(){
+      if(stoneExtended || !templeSvg) return;
+      const NS = 'http://www.w3.org/2000/svg';
+      templeSvg.querySelectorAll('.t-back, .t-mid, .t-front').forEach((g) => {
+        [...g.querySelectorAll(':scope > path')].forEach((p) => {
+          if(p.classList.contains('tk') || p.classList.contains('td')) return;
+          const b = p.getBBox(); if(!b.width) return;
+          const e = document.createElementNS(NS, 'path');
+          e.setAttribute('class', p.getAttribute('class') || '');
+          e.setAttribute('d', `M${b.x} ${b.y + b.height - 40}H${b.x + b.width}V${b.y + b.height + 1600}H${b.x}Z`);
+          g.insertBefore(e, g.firstChild);
+        });
+      });
+      stoneExtended = true;
+    }
     function placeTemple(){
       if(!templeSvg) return;
       const small = isPhone() && lyfe;
       if(small){
         if(!templeHolder){ templeHolder = document.createElement('div'); templeHolder.className = 'bg-temple card-temple'; templeHolder.setAttribute('aria-hidden', 'true'); lyfe.appendChild(templeHolder); }
         if(templeSvg.parentNode !== templeHolder){ templeHolder.appendChild(templeSvg); templeExtras.forEach((e) => templeHolder.appendChild(e)); }
+        extendStone();
         /* stand it on the floor of the screen that is really visible: the pinned scene reaches under a phone's toolbar, so the foot meets the scene's bottom padding
-           (the part kept clear of the toolbar and the home indicator), and the stone that runs on below it fills the rest, down to the very bottom */
+           (the part kept clear of the toolbar and the home indicator) and the stone below it runs on to the very bottom, whatever the toolbar is doing */
         const pin = root.querySelector('.work-pin');
         if(pin){
-          const cs = getComputedStyle(pin), runOn = templeHolder.offsetHeight * 0.4;   /* the stone below the foot is 14u deep; the holder is 30u */
-          const clear = Math.min(parseFloat(cs.paddingBottom) || 0, runOn);   /* never more than the stone below the foot can cover */
+          const clear = parseFloat(getComputedStyle(pin).paddingBottom) || 0;
           templeHolder.style.marginTop = '0px';
           const gap = pin.getBoundingClientRect().bottom - clear - lyfe.getBoundingClientRect().bottom - templeHolder.offsetHeight;
           templeHolder.style.marginTop = Math.max(0, gap) + 'px';
