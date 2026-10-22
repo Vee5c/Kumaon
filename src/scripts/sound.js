@@ -322,9 +322,9 @@
         bubble = document.createElement('div'); bubble.className = 'kc-bubble'; bubble.setAttribute('aria-hidden', 'true'); bubble.textContent = 'Click me';
         document.body.appendChild(bubble);
       }
-      var w = bubble.offsetWidth, x = e.clientX + 22;
-      if(x + w > window.innerWidth - 8) x = e.clientX - 22 - w;
-      bubble.style.transform = 'translate3d(' + Math.round(x) + 'px,' + Math.round(e.clientY + 8) + 'px,0)';
+      var w = bubble.offsetWidth, h = bubble.offsetHeight, x = e.clientX + 12;
+      if(x + w > window.innerWidth - 8) x = e.clientX - 12 - w;
+      bubble.style.transform = 'translate3d(' + Math.round(x) + 'px,' + Math.round(e.clientY - h - 14) + 'px,0)';   /* close to the pointer, a little above it */
       bubble.classList.toggle('is-left', x < e.clientX);
       bubble.classList.add('is-shown');
     }, { passive: true });
