@@ -86,7 +86,7 @@
 .svc-dots li{ width:8px; height:8px; border-radius:50%; background:var(--paper); opacity:0.4; transition:opacity 0.25s ease; }
 .svc-dots li.on{ opacity:1; }
 @media (max-width:820px){
-  .svc-dots{ right:auto; left:50%; top:auto; bottom:calc(env(safe-area-inset-bottom, 0px) + clamp(28px, 6%, 52px)); transform:translateX(-50%); flex-direction:row; gap:14px; }   /* clear of the browser's bottom bar and the home indicator */
+  .svc-dots{ right:auto; left:50%; top:auto; bottom:calc(max(env(safe-area-inset-bottom, 0px), var(--vh, 100svh) - 100svh) + clamp(28px, 6%, 52px)); transform:translateX(-50%); flex-direction:row; gap:14px; }   /* clear of the browser's bottom bar and the home indicator */
   .svc-dots li{ width:10px; height:10px; opacity:0.55; box-shadow:0 0 0 1px color-mix(in srgb, var(--c-night) 25%, transparent); }
   .svc-dots li.on{ opacity:1; }
 }

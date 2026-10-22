@@ -13,7 +13,7 @@ const shareImage = Astro.site ? new URL('/images/og-image.png', Astro.site).href
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />   {/* lets the page reach the bottom of an iPhone's screen (under the home indicator); the safe-area insets below keep text and controls clear of it */}
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}

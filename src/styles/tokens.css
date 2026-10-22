@@ -92,7 +92,7 @@ body::before{
 /* phones: skip the full-screen grain; a fixed blended layer costs a repaint on every scroll frame */
 @media (pointer:coarse), (max-width:820px){ body::before{ display:none; } }
 
-:root{ --pad:clamp(20px, 4.5vw, 64px); }
+:root{ --pad:max(clamp(20px, 4.5vw, 64px), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)); }   /* never closer to the edge than a landscape phone's notch */
 /* spacing scale, 4px base */
 :root{ --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px; --sp-8:64px; }
 /* one size for the three big section headings: Selected work, Approach and Let's make something */

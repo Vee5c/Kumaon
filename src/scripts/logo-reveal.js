@@ -67,15 +67,25 @@
   var queued = false, needMeasure = true, lastTh = 90, dirFwd = true, hidden = [false, false, false];
   /* the scene follows the scroll through its own eased copy of the section's position, so a mouse wheel's 100px steps glide (about a tenth of a second) instead of jumping;
      a long jump (a link to a section, a refresh half way down) lands at once */
-  var glide = null, glideAt = 0;
+  /* where the logo and the pin sit with no transform on the logo, measured once (and again on resize): each frame's position is then worked out, with no layout read after the writes */
+  var rest = null;
+  function rebase(){
+    var keep = logo.style.transform; logo.style.transform = '';
+    var lr0 = logo.getBoundingClientRect(), pr0 = pin.getBoundingClientRect();
+    rest = { l: lr0.left - pr0.left, t: lr0.top - pr0.top, w: lr0.width, h: lr0.height, pw: pin.clientWidth, ph: pin.clientHeight };
+    logo.style.transform = keep;
+  }
+  var glide = null, glideAt = 0, lastTint = null, lastDotPx = '';
+  var fine = !!(window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches);   /* a touch screen already scrolls with its own momentum: easing on top of it only lags behind the page */
   function update(now){
+    var __t0 = performance.now();
     queued = false;
     var vh = window.__vh ? window.__vh() : window.innerHeight;
     readPaper();
     var sb = sec.getBoundingClientRect(), top = sb.top;
     if(sb.bottom < -40 || top > vh + 40){ glide = null; return; }   /* off screen: leave the last frame as it is */
     var tNow = typeof now === 'number' ? now : performance.now();
-    if(glide === null || Math.abs(top - glide) > vh * 1.2){ glide = top; }
+    if(!fine || glide === null || Math.abs(top - glide) > vh * 1.2){ glide = top; }
     else{
       glide += (top - glide) * (1 - Math.exp(-Math.min(64, tNow - glideAt) / 90));
       if(Math.abs(top - glide) < 0.4) glide = top; else queue();
@@ -89,7 +99,8 @@
     var t = (scrolled - SERVICES_AT * vh) / vh;            /* services timeline, in viewport heights */
 
     /* logo: glide to the centre and reveal; it keeps its full size */
-    var h = parseFloat(getComputedStyle(logo).height) || 0;
+    if(!rest) rebase();
+    var h = rest.h;
     var centreTop = 62 + (vh - 62 - h) / 2;
     var dy = Math.max(0, centreTop - TOP_GAP);
     var m = ease(enter);
@@ -98,12 +109,12 @@
     var nowDone = alpha >= 0.97;
     if(nowDone !== logoDone){ logoDone = nowDone; logo.classList.toggle('is-complete', nowDone); }
 
-    var pr = pin.getBoundingClientRect(), lr = logo.getBoundingClientRect();
-    var pw = pin.clientWidth, ph = pin.clientHeight, k = lr.height / VB.h;
-    function map(p){ return [lr.left - pr.left + (p.x - VB.x) * k, lr.top - pr.top + (p.y - VB.y) * k]; }
+    var sc = 0.9 + 0.1 * m, lrL = rest.l + rest.w * (1 - sc) / 2, lrT = rest.t - dy * (1 - m) + rest.h * (1 - sc) / 2, lrH = rest.h * sc;
+    var pw = rest.pw, ph = rest.ph, k = lrH / VB.h;
+    function map(p){ return [lrL + (p.x - VB.x) * k, lrT + (p.y - VB.y) * k]; }
     var w0 = map(WM), c0 = map(LC);
     var R = LC.r * k + 38;                                   /* just outside the logo's edge, with a little air */
-    var wantPx = WORD_EM * lr.height;
+    var wantPx = WORD_EM * lrH;
     if(needMeasure || Math.abs(wantPx - fontPx) > 0.5){ measure(wantPx); needMeasure = false; }
 
     /* where the dot is: leaves the wordmark, joins the orbit, then stops at each service */
@@ -117,12 +128,14 @@
     var q = ease(seg(t, MORPH[0], MORPH[1]));
     var conv = ease(seg(q, 0, 0.75)), shrink = ease(seg(q, 0.35, 1));
     var tint = q > 0.001 ? 'rgb(' + [0, 1, 2].map(function(c){ return Math.round(lerp(CREAM[c], BLUE[c], ease(seg(q, 0, 0.5)))); }).join(',') + ')' : '';
+    var tintChanged = tint !== lastTint; lastTint = tint;
     letters.forEach(function(g, i){
       g.style.transform = 'translateX(' + (-ratios[i] * fontPx * conv) + 'px) scale(' + lerp(1, 0.1, shrink) + ')';
-      g.style.color = g.classList.contains('amp') ? '' : tint;    /* every letter turns from the text colour to blue as it joins the melt; the "&" is blue all along */
+      if(tintChanged) g.style.color = g.classList.contains('amp') ? '' : tint;    /* every letter turns from the text colour to blue as it joins the melt; the "&" is blue all along */
     });
     var circleR = (DOT / 2) * ease(seg(q, 0.3, 1));
-    wmDot.style.width = wmDot.style.height = (2 * circleR) + 'px';
+    var dotPx = (2 * circleR).toFixed(1) + 'px';
+    if(dotPx !== lastDotPx){ lastDotPx = dotPx; wmDot.style.width = wmDot.style.height = dotPx; }
     if(q > 0.01){ gooBlur.setAttribute('stdDeviation', fontPx * 0.06 * Math.sin(Math.min(1, q * 1.15) * Math.PI / 2)); wmT.style.filter = 'url(#goo-h)'; }
     else wmT.style.filter = '';
     var swap = t >= MORPH[1] ? 1 : 0;          /* the melted circle and the dot are identical, so this is invisible */
@@ -195,9 +208,12 @@
     dotsBox.style.opacity = seg(t, 0.55, 0.8);
     var on = t < 2.15 ? 0 : t < 4.15 ? 1 : 2;
     dots.forEach(function(d, i){ d.classList.toggle('on', i === on); });
+    if(window.__kcPerf){ var d = performance.now() - __t0; window.__kcPerf.push(d); }
   }
   function queue(){ if(!queued){ queued = true; requestAnimationFrame(update); } }
   window.addEventListener('scroll', queue, { passive:true });
-  window.addEventListener('resize', function(){ needMeasure = true; queue(); });
+  window.addEventListener('resize', function(){ rest = null; needMeasure = true; queue(); });
+  window.addEventListener('vhchange', function(){ rest = null; queue(); });
+  window.addEventListener('load', function(){ rest = null; queue(); });
   update();
 })();

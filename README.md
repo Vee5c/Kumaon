@@ -162,6 +162,10 @@ Every push and pull request is built automatically, so a broken site shows up st
 
 `public/robots.txt` and `public/sitemap.xml` (the home page only, for now) are served as they are. `src/pages/404.astro` is the not-found page (Netlify serves it as `404.html`, and it is marked `noindex`). The home page carries a small block of structured data (`Organization`: name, logo, Bangalore, founded 2025, Vee as founder, Instagram), set in `src/pages/index.astro`. `netlify.toml` also sets cache headers: built scripts and styles for a year, fonts for 30 days, images, video and audio for a week. When a page is added, add it to `sitemap.xml`.
 
+### iPhones and other phones
+
+The page tells the browser it may reach under the home indicator (`viewport-fit=cover` in `Layout.astro`), so the pinned scenes fill the whole screen in Safari instead of stopping above its bottom bar. Text and controls keep clear of the notch and the home indicator through the `env(safe-area-inset-*)` values in `tokens.css`, `header.css`, `sections.css`, `work.css` and `logo-reveal.css`. On a phone the temple's foot stands on the part of the screen that stays visible above the browser's toolbar, and its stone runs on below it, so it is neither floating nor cut off. The logo scene's easing (`logo-reveal.js`) is for a mouse only; on a touch screen it follows the scroll directly, and its positions are worked out from one measurement instead of being read back from the page every frame.
+
 ### B. Build on your computer and upload
 
 Run `npm run build`, then upload the contents of `dist/` to the hosting for the domain (GoDaddy's file manager or FTP), replacing the old files. This works for GoDaddy shared hosting; nothing runs automatically.

@@ -142,11 +142,14 @@ const count = String(cards.length).padStart(2, '0');
       if(small){
         if(!templeHolder){ templeHolder = document.createElement('div'); templeHolder.className = 'bg-temple card-temple'; templeHolder.setAttribute('aria-hidden', 'true'); lyfe.appendChild(templeHolder); }
         if(templeSvg.parentNode !== templeHolder){ templeHolder.appendChild(templeSvg); templeExtras.forEach((e) => templeHolder.appendChild(e)); }
-        /* stand it on the floor of the screen: the gap under the film is whatever lets the holder's bottom meet the bottom of the pinned screen */
+        /* stand it on the floor of the screen that is really visible: the pinned scene reaches under a phone's toolbar, so the foot meets the scene's bottom padding
+           (the part kept clear of the toolbar and the home indicator), and the stone that runs on below it fills the rest, down to the very bottom */
         const pin = root.querySelector('.work-pin');
         if(pin){
+          const cs = getComputedStyle(pin), runOn = templeHolder.offsetHeight * 0.4;   /* the stone below the foot is 14u deep; the holder is 30u */
+          const clear = Math.min(parseFloat(cs.paddingBottom) || 0, runOn);   /* never more than the stone below the foot can cover */
           templeHolder.style.marginTop = '0px';
-          const gap = pin.getBoundingClientRect().bottom - lyfe.getBoundingClientRect().bottom - templeHolder.offsetHeight;
+          const gap = pin.getBoundingClientRect().bottom - clear - lyfe.getBoundingClientRect().bottom - templeHolder.offsetHeight;
           templeHolder.style.marginTop = Math.max(0, gap) + 'px';
         }
       } else if(templeSvg.parentNode !== templeLayer){ templeLayer.appendChild(templeSvg); templeExtras.forEach((e) => templeLayer.appendChild(e)); }

@@ -2,7 +2,7 @@
 
 /* Header: the top padding scrolls away, leaving a compact bar */
 header.top{
-  --hdr-top:clamp(14px, 2.2vw, 26px);
+  --hdr-top:calc(clamp(14px, 2.2vw, 26px) + env(safe-area-inset-top, 0px));
   background:transparent;
   color:var(--ink);
   /* fixed, not sticky: sticky headers drop out on iPhones when other pinned scenes share the page. It stays put on scroll,
