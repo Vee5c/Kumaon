@@ -65,12 +65,23 @@
   }
 
   var queued = false, needMeasure = true, lastTh = 90, dirFwd = true, hidden = [false, false, false];
-  function update(){
+  /* the scene follows the scroll through its own eased copy of the section's position, so a mouse wheel's 100px steps glide (about a tenth of a second) instead of jumping;
+     a long jump (a link to a section, a refresh half way down) lands at once */
+  var glide = null, glideAt = 0;
+  function update(now){
     queued = false;
     var vh = window.__vh ? window.__vh() : window.innerHeight;
     readPaper();
     var sb = sec.getBoundingClientRect(), top = sb.top;
-    if(sb.bottom < -40 || top > vh + 40) return;   /* off screen: leave the last frame as it is */
+    if(sb.bottom < -40 || top > vh + 40){ glide = null; return; }   /* off screen: leave the last frame as it is */
+    var tNow = typeof now === 'number' ? now : performance.now();
+    if(glide === null || Math.abs(top - glide) > vh * 1.2){ glide = top; }
+    else{
+      glide += (top - glide) * (1 - Math.exp(-Math.min(64, tNow - glideAt) / 90));
+      if(Math.abs(top - glide) < 0.4) glide = top; else queue();
+    }
+    glideAt = tNow;
+    top = glide;
     var scrolled = -top / PACE;
     var enter = clamp((vh - top) / vh);
     var pinned = clamp(scrolled / (LOGO_TRAVEL * vh));

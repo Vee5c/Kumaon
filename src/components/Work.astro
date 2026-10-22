@@ -135,13 +135,21 @@ const count = String(cards.length).padStart(2, '0');
     const templeSvg = templeLayer && templeLayer.querySelector('svg');
     const lyfe = track.querySelector(':scope > .card.is-wide');   /* the Metal film: the first wide card in the row */
     let templeHolder = null;
+    const templeExtras = templeLayer ? [...templeLayer.querySelectorAll('.t-petals, .t-fireflies')] : [];   /* the day's petals and the night's fireflies go where the temple goes */
     function placeTemple(){
       if(!templeSvg) return;
       const small = isPhone() && lyfe;
       if(small){
         if(!templeHolder){ templeHolder = document.createElement('div'); templeHolder.className = 'bg-temple card-temple'; templeHolder.setAttribute('aria-hidden', 'true'); lyfe.appendChild(templeHolder); }
-        if(templeSvg.parentNode !== templeHolder) templeHolder.appendChild(templeSvg);
-      } else if(templeSvg.parentNode !== templeLayer){ templeLayer.appendChild(templeSvg); }
+        if(templeSvg.parentNode !== templeHolder){ templeHolder.appendChild(templeSvg); templeExtras.forEach((e) => templeHolder.appendChild(e)); }
+        /* stand it on the floor of the screen: the gap under the film is whatever lets the holder's bottom meet the bottom of the pinned screen */
+        const pin = root.querySelector('.work-pin');
+        if(pin){
+          templeHolder.style.marginTop = '0px';
+          const gap = pin.getBoundingClientRect().bottom - lyfe.getBoundingClientRect().bottom - templeHolder.offsetHeight;
+          templeHolder.style.marginTop = Math.max(0, gap) + 'px';
+        }
+      } else if(templeSvg.parentNode !== templeLayer){ templeLayer.appendChild(templeSvg); templeExtras.forEach((e) => templeLayer.appendChild(e)); }
     }
     function layout(){
       placeTemple();

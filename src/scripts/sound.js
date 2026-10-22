@@ -310,6 +310,29 @@
   });
   var snowTouchT = 0;
 
+  /* a small "Click me" bubble beside the music-note cursor while the pointer is on the finished logo and sound is on (a mouse only; a touch screen has no hover) */
+  var bubble = null, canHover = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
+  function bubbleHide(){ if(bubble) bubble.classList.remove('is-shown'); }
+  if(canHover){
+    document.addEventListener('pointermove', function(e){
+      if(e.pointerType !== 'mouse') return;
+      var t = e.target && e.target.closest ? e.target.closest('.reveal-logo.is-complete') : null;
+      if(!t || !on || t.classList.contains('is-roaring')){ bubbleHide(); return; }
+      if(!bubble){
+        bubble = document.createElement('div'); bubble.className = 'kc-bubble'; bubble.setAttribute('aria-hidden', 'true'); bubble.textContent = 'Click me';
+        document.body.appendChild(bubble);
+      }
+      var w = bubble.offsetWidth, h = bubble.offsetHeight, x = e.clientX + 12;
+      if(x + w > window.innerWidth - 8) x = e.clientX - 12 - w;
+      bubble.style.transform = 'translate3d(' + Math.round(x) + 'px,' + Math.round(e.clientY - h - 14) + 'px,0)';   /* close to the pointer, a little above it */
+      bubble.classList.toggle('is-left', x < e.clientX);
+      bubble.classList.add('is-shown');
+    }, { passive: true });
+    document.addEventListener('pointerdown', bubbleHide, true);
+    document.addEventListener('mouseleave', bubbleHide);
+    window.addEventListener('scroll', bubbleHide, { passive: true });
+  }
+
   document.addEventListener('visibilitychange', function(){
     if(document.hidden){ stopRoar(0); templeStop(0); snowStop(0); }
     if(!ctx) return;

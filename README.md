@@ -82,6 +82,8 @@ Each film has two files: the full one and a light one for phones, slow connectio
 - `site` in `astro.config.mjs` is `https://kumaon.co`, so the share image link (`og:image`) and canonical links are full URLs.
 - **Sound** is off until the visitor presses the speaker button in the header (beside the menu button on phones). The choice is saved in `localStorage` (`kc-sound`) only when turned on, and everything stops when the tab is hidden. All of it lives in `src/scripts/sound.js`; `window.kcSound.play(name)` plays a sound when it is on.
 - **Finding the sounds**: with sound off, arriving on the finished logo, the temple or the mountain snow makes the header speaker wiggle (at most every few seconds); the cursor turns into a music note over them. On touch screens a tap on the temple or the mountain plays its sound.
+- **"Click me" bubble**: with sound on, a mouse pointer on the finished logo shows a small "Click me" bubble beside the music-note cursor (hidden while it roars, and on touch screens).
+- **Smooth logo scroll**: the logo scene follows the scroll through an eased copy of the section's position (`logo-reveal.js`, about a tenth of a second), so a mouse wheel's steps glide instead of jumping. A long jump (a link, a refresh half way down) lands at once.
 - **Sound you can see**: the roar swells the logo; the temple's edges glow very softly with the bell (`--glow`, from the bell's measured loudness; with sound off it follows the same curve silently); the snowfall makes the flakes fall about 12% faster while it plays.
 - **The mountain's snow** (`src/components/RidgeSnow.astro`) is drawn by a small WebGL shader: round dots settle into the patches from 1.5 s to 11 s (a little slower at first, faster towards the end), and a quick pointer pass blows the flakes aside. Flakes land on the ridge and melt into it. Without WebGL the same arrival is done with SVG masks; with reduced motion the patches are simply there.
 - **The water's gust** (Contact): a quick pointer pass over the water bends the ripple lines for a moment (an SVG displacement filter, only while the gust blows), sends a few faint glints along the surface, and nudges the diyas and boat sideways a few pixels. It dies away as soon as the pointer stops, and is off on touch screens and with reduced motion.
@@ -151,6 +153,10 @@ The workflow (with manual publishing, see above) and `CNAME` are already in the 
 Every push and pull request is built automatically, so a broken site shows up straight away. Publishing only happens when you start it: open the repository's **Actions** tab, choose **Build and publish**, and press **Run workflow**. That builds the latest `main` and publishes it. One-time setup: Settings, then Pages, then set **Source** to **GitHub Actions**. The domain file `public/CNAME` is already in place. Pushing to `main` alone never changes the live site.
 
 (The older way still works if you prefer it: `npm run build`, then `npx gh-pages -d dist`, with Pages set to serve the `gh-pages` branch. Use one way or the other, not both.)
+
+### Netlify
+
+`netlify.toml` tells Netlify what to do: run `npm run build` and serve `dist/` with Node 22. If the Netlify site was set up for the old single-file page, check Site configuration, then Build and deploy, and clear any old build command or publish folder, so this file is used. A page-not-found after deploying usually means Netlify is serving the repository's root folder instead of `dist/`.
 
 ### B. Build on your computer and upload
 
