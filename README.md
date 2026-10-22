@@ -158,6 +158,10 @@ Every push and pull request is built automatically, so a broken site shows up st
 
 `netlify.toml` tells Netlify what to do: run `npm run build` and serve `dist/` with Node 22. If the Netlify site was set up for the old single-file page, check Site configuration, then Build and deploy, and clear any old build command or publish folder, so this file is used. A page-not-found after deploying usually means Netlify is serving the repository's root folder instead of `dist/`.
 
+### Search and sharing (SEO)
+
+`public/robots.txt` and `public/sitemap.xml` (the home page only, for now) are served as they are. `src/pages/404.astro` is the not-found page (Netlify serves it as `404.html`, and it is marked `noindex`). The home page carries a small block of structured data (`Organization`: name, logo, Bangalore, founded 2025, Vee as founder, Instagram), set in `src/pages/index.astro`. `netlify.toml` also sets cache headers: built scripts and styles for a year, fonts for 30 days, images, video and audio for a week. When a page is added, add it to `sitemap.xml`.
+
 ### B. Build on your computer and upload
 
 Run `npm run build`, then upload the contents of `dist/` to the hosting for the domain (GoDaddy's file manager or FTP), replacing the old files. This works for GoDaddy shared hosting; nothing runs automatically.
