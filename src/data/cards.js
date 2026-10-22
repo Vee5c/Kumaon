@@ -14,11 +14,11 @@ const all = [featured, ...reels, ...versatility];
 const find = (id) => all.find((c) => c.video.endsWith(`/${id}.mp4`));
 
 const ORDER = [
-  { id: 'sato-clip',       label: 'Sato — Holiday Campaign',        tall: false, lead: true, at: 0 },
-  { id: 'pizza-clip',      label: 'Lyfe — The Pizza Cut',           tall: true,  align: 'start', speed: 1.04, gap: 12, at: 0 },
-  { id: 'metal-clip',      label: 'Metal — Cut to the Riff',        tall: false, align: 'end',   speed: 1.08, gap: 24, h: 46, at: 8 },
-  { id: 'sandwichie-clip', label: 'FnB — quick, catchy, gone',        tall: true, align: 'start', speed: 1.12, gap: 14, at: 0 },
-  { id: 'dream39-clip',    label: 'Animated intro — just for you',   tall: false, speed: 1.16, gap: 28, at: 0 },
+  { id: 'sato-clip',       label: 'Sato - Holiday Campaign',        tall: false, lead: true, at: 0 },
+  { id: 'pizza-clip',      label: 'Lyfe - The Pizza Cut',           tall: true,  align: 'start', speed: 1.04, gap: 12, at: 0 },
+  { id: 'metal-clip',      label: 'Metal - Cut to the Riff',        tall: false, align: 'end',   speed: 1.08, gap: 24, h: 46, at: 8 },
+  { id: 'dream39-clip',    label: 'Animated intro - just for you',   tall: false, align: 'start',   speed: 1.12, gap: 16, h: 42, at: 0, preview: 2.5 },
+  { id: 'sandwichie-clip', label: 'FnB - quick, catchy, gone',        tall: true, align: 'start', speed: 1.16, gap: 16, at: 0 },
 ];
 
 export const cards = ORDER.map(({ id, ...extra }) => ({
