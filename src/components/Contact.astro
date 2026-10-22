@@ -52,7 +52,8 @@
     const ctx = cv.getContext('2d');
     let w = 0, h = 0, dpr = 1;
     const fit = () => { dpr = Math.min(devicePixelRatio || 1, 2); w = cv.clientWidth; h = cv.clientHeight; cv.width = w * dpr; cv.height = h * dpr; };
-    fit(); addEventListener('resize', fit);
+    let fitW = innerWidth;
+    fit(); addEventListener('resize', () => { if(innerWidth !== fitW){ fitW = innerWidth; fit(); } });
     const glints = [], wind = { vx: 0, vy: 0, x: 0, y: 0 };
     const movers = [...water.querySelectorAll('.mover')].map((host) => ({ host, el: host.querySelector('b'), x: 0, v: 0, k: host.classList.contains('boat') ? 0.45 : 1 }));
     let px = 0, py = 0, pt = 0, raf = 0, last = 0, onScreen = false;

@@ -219,7 +219,8 @@
       requestAnimationFrame(tick);
     };
     new IntersectionObserver((es) => { running = es[0].isIntersecting; if(running){ last = performance.now(); requestAnimationFrame(tick); } }).observe(box);
-    addEventListener('resize', size);
+    let sizedW = innerWidth;
+    addEventListener('resize', () => { if(innerWidth !== sizedW){ sizedW = innerWidth; size(); } });   /* not for a phone's toolbars sliding (the height alone changes) */
     size();
 
     /* the pointer gusting through: its speed over the flakes blows them aside */
