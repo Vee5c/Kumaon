@@ -9,8 +9,20 @@ import Approach from '../components/Approach.astro';
 import Contact from '../components/Contact.astro';
 import Lightbox from '../components/Lightbox.astro';
 import Footer from '../components/Footer.astro';
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Kumaon & Co.',
+  url: 'https://kumaon.co/',
+  logo: 'https://kumaon.co/images/logo-disc.png',
+  description: 'An independent video production house in Bangalore making ads, music videos and social content — shot, scored and cut in-house.',
+  foundingDate: '2025',
+  founder: { '@type': 'Person', name: 'Vee' },
+  address: { '@type': 'PostalAddress', addressLocality: 'Bangalore', addressCountry: 'IN' },
+  sameAs: ['https://www.instagram.com/kumaonco/'],
+};
 ---
-<Layout>
+<Layout schema={schema}>
   <Header />
   <main id="main" tabindex="-1">
   <!-- the hero holds still only while the reveal slides over it; this wrapper is where that ends -->

@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+<Layout title="Page not found · Kumaon & Co." noindex={true}>
+  <Header />
+  <main class="wrap gutter" style="min-height:60svh; padding-block:clamp(72px, 14vh, 140px);">
+    <span class="idx">404 /</span>
+    <h1 style="font-size:clamp(2.6rem, 8vw, 5.4rem);">This page<br />isn't here.</h1>
+    <p style="max-width:44ch; margin-top:20px; color:var(--ink-dim); font-family:'Hanken Grotesk', system-ui, sans-serif; line-height:1.5;">
+      The link may be old, or the address mistyped. The home page has everything.
+    </p>
+    <p style="margin-top:28px;"><a href="/" style="font-family:'Bricolage Grotesque', system-ui, sans-serif; font-weight:700; text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:6px;">Back to the home page</a></p>
+  </main>
+  <Footer />
+</Layout>

@@ -5,7 +5,7 @@ import '../styles/hero.css';
 import '../styles/logo-reveal.css';
 import '../styles/sections.css';
 import '../styles/work.css';
-const { title = 'Kumaon & Co.', description = 'An independent video production house in Bangalore making ads, music videos and social content — shot, scored and cut in-house.' } = Astro.props;
+const { noindex = false, schema = null, title = 'Kumaon & Co.', description = 'An independent video production house in Bangalore making ads, music videos and social content — shot, scored and cut in-house.' } = Astro.props;
 const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : null;
 const shareImage = Astro.site ? new URL('/images/og-image.png', Astro.site).href : '/images/og-image.png';
 ---
@@ -16,6 +16,8 @@ const shareImage = Astro.site ? new URL('/images/og-image.png', Astro.site).href
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
     <meta name="theme-color" content="#efe6d3" />
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
