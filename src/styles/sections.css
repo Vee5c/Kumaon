@@ -89,7 +89,7 @@ section + section{ border-top:1px solid var(--line); }
 .contact{
   position:relative; overflow:hidden;
   /* a compact closing section; the top of the screen still shows a little of Approach at the very bottom of the page */
-  --footer-h:64px;
+  --footer-h:calc(64px + env(safe-area-inset-bottom, 0px));
   /* the blue runs on down behind the footer line, which sits over it with no background of its own */
   min-height:calc(var(--vh, 100svh) * 0.64 - 66px + var(--footer-h));
   padding-bottom:var(--footer-h);
@@ -152,8 +152,8 @@ footer{
   background:transparent;
   color:var(--on-water);
   position:relative; z-index:2;
-  height:64px; margin-top:-64px;   /* the contact section's --footer-h */
-  padding:0 var(--pad) 24px;
+  height:calc(64px + env(safe-area-inset-bottom, 0px)); margin-top:calc(-64px - env(safe-area-inset-bottom, 0px));   /* the contact section's --footer-h */
+  padding:0 var(--pad) calc(24px + env(safe-area-inset-bottom, 0px));
   display:flex; align-items:flex-end; justify-content:flex-end;
   font-family:'Hanken Grotesk', system-ui, sans-serif;
   font-size:0.72rem;

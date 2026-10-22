@@ -86,7 +86,7 @@ a.card-title{ display:inline-block; padding-block:13px; margin-block:-13px; }
   .work{ --u:min(1svh, 1.8vw); --gap:calc(var(--u) * 6); --step:0.8; }
   .work{ --pin-top:clamp(76px, 11vh, 92px); }
   /* the bottom of the pinned scene that sits under a phone's address bar is kept clear, so nothing important lands there */
-  .work-pin{ padding-top:var(--pin-top); padding-bottom:max(0px, calc(var(--vh, 100svh) - 100svh)); }
+  .work-pin{ padding-top:var(--pin-top); padding-bottom:max(env(safe-area-inset-bottom, 0px), calc(var(--vh, 100svh) - 100svh)); }
   .work-first{ width:max-content; max-width:none; flex-direction:column; justify-content:space-between; align-items:flex-start; gap:calc(var(--u) * 3); }
   .work-intro{ margin-right:0; }
   .work-intro h2{ font-size:var(--h2m); }
