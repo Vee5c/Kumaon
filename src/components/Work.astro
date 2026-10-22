@@ -195,6 +195,7 @@ const count = String(cards.length).padStart(2, '0');
     /* Films preview themselves: while a frame is on screen it plays its first few seconds, muted, on a loop. Pressing a film plays it
        from the start with sound and controls (one at a time); when it ends or leaves the screen it drops back to the preview. */
     const PREVIEW = 6;                                  /* seconds of each film that loop as its preview */
+    const lengthOf = (v) => parseFloat(v.dataset.preview || PREVIEW);   /* a film can have a shorter preview (the animated intro loops its first 2 seconds) */
     const startOf = (v) => parseFloat(v.dataset.at || '0');   /* where that preview starts: the poster's own moment */
     const canPreview = !still && !(navigator.connection && navigator.connection.saveData);
     let full = null;
@@ -207,7 +208,7 @@ const count = String(cards.length).padStart(2, '0');
     videos.forEach((v) => {
       v.muted = true;
       v.addEventListener('loadedmetadata', () => { if(v !== full) v.currentTime = startOf(v); });
-      v.addEventListener('timeupdate', () => { if(v !== full && v.currentTime >= startOf(v) + PREVIEW) v.currentTime = startOf(v); });
+      v.addEventListener('timeupdate', () => { if(v !== full && v.currentTime >= startOf(v) + lengthOf(v)) v.currentTime = startOf(v); });
       v.addEventListener('ended', () => { if(v === full){ toPreview(v); if(canPreview) v.play().catch(() => {}); } });
     });
     root.addEventListener('click', (e) => {

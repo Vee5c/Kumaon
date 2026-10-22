@@ -8,7 +8,7 @@ const { c, lead = false } = Astro.props;
   style={`--h:${c.h}; --ratio:${c.tall ? 0.5625 : 1.7778};${c.gap ? ` --m:${c.gap};` : ''}${lead || !c.align ? '' : ` align-self:flex-${c.align};`}`}
 >
   <div class="card-media" role="button" tabindex="0" aria-label={`Play ${c.label}`}>
-    <video class="card-video" muted playsinline loop preload="metadata" data-at={c.at ?? 0} poster={media(c.poster)} data-src={media(c.video)} data-src-sm={media(c.video.replace(".mp4", "-sm.mp4"))} aria-label={c.label}></video>
+    <video class="card-video" muted playsinline loop preload="metadata" data-at={c.at ?? 0} data-preview={c.preview} poster={media(c.poster)} data-src={media(c.video)} data-src-sm={media(c.video.replace(".mp4", "-sm.mp4"))} aria-label={c.label}></video>
   </div>
   <p class="card-cap">
     {c.link

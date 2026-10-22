@@ -3,7 +3,7 @@
    Plain on purpose: cream ground, ink type, the logo orange only on the crate. */
 
 .work{
-  --u:min(1svh, 0.85vw);                    /* the unit every size in this section is built from */
+  --u:min(1svh, 0.62vw);                    /* the unit every size in this section is built from: the screen height, or on a narrow screen its width, so the last films and the archive link still fit together */
   --orange:var(--c-orange); --blue:var(--c-blue); --ink-fixed:var(--c-night);
   --gap:calc(var(--u) * 11);                /* edge padding; between items the gap steps through 8, 10, 14 and 17 */
   --step:1;
@@ -49,9 +49,10 @@ a.card-title{ display:inline-block; padding-block:13px; margin-block:-13px; }
 .card-tag{ color:var(--ink-dim); white-space:nowrap; font-size:0.82rem; }
 .is-tall .card-cap{ flex-direction:column; align-items:flex-start; gap:2px; }
 
-/* the last film on the upper line's top, with the archive link at the bottom, right-aligned */
-.work-tail{ flex:none; align-self:stretch; display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end; margin-left:calc(var(--m, 0) * var(--u) * var(--step)); }
-.work-tail .card{ margin-left:0; }
+/* the last film is tall, so the archive link stands beside it instead of under it: the film on the upper line, the link on the floor of the row to its right (a stack would not fit the screen's height) */
+.work-tail{ flex:none; align-self:stretch; display:flex; flex-direction:row; justify-content:flex-start; align-items:stretch; gap:calc(var(--u) * 8); margin-left:calc(var(--m, 0) * var(--u) * var(--step)); }
+.work-tail .card{ margin-left:0; align-self:flex-start; }
+.work-tail .crate{ align-self:flex-end; }
 .crate{ position:relative; display:block; width:calc(var(--u) * 18.5); height:calc(var(--u) * 20); margin-bottom:calc(var(--u) * 6.8); color:var(--c-night); text-decoration:none; --lift:0; }
 .crate:focus-visible{ outline:3px solid var(--blue); outline-offset:6px; border-radius:20px; }
 .crate-stack{ position:absolute; inset:0; }
@@ -102,8 +103,9 @@ a.card-title{ display:inline-block; padding-block:13px; margin-block:-13px; }
   .work-track > .card{ align-self:center !important; }
   .work-track > .card.is-tall{ margin-bottom:calc(var(--u) * 8); }
   .work-track > .card.is-wide{ margin-top:calc(var(--u) * 8); }
-  .work-tail{ align-self:center; justify-content:flex-start; gap:calc(var(--u) * 5); }
-  .work-tail .card{ width:min(calc(var(--h) * var(--u) * var(--ratio)), 84vw); }
+  .work-tail{ align-self:center; flex-direction:column; justify-content:flex-start; align-items:flex-end; gap:calc(var(--u) * 5); }
+  .work-tail .card, .work-tail .crate{ align-self:auto; }
+  .work-tail .card{ width:min(calc(var(--h) * var(--u) * var(--ratio)), 84vw, calc((var(--vh, 100svh) - var(--pin-top) - var(--u) * 48) * var(--ratio))); }   /* the last film and the archive link share one column: on a tall tablet the film gives up some height so both fit */
   .card-cap{ font-size:0.85rem; }
 }
 @media (prefers-reduced-motion:reduce){

@@ -259,12 +259,6 @@ document.querySelector('.skip')?.addEventListener('click', () => { document.getE
   }
 }
 
-/* leave the tab and the title calls you back; return and it is the name again */
-{
-  const title = document.title;
-  document.addEventListener('visibilitychange', () => { document.title = document.hidden ? 'Come back, the diyas are lit' : title; });
-}
-
 /* Bangalore time in the footer, to the minute */
 {
   const el = document.querySelector('.bangalore-time');

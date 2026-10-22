@@ -44,12 +44,12 @@
 
   /* a finished word: every square of it turns into a solid tile (orange, blue or cream), popping in outward from the letter just placed.
      A square shared by two finished words is split corner to corner in both colours, so each word still reads in its own colour; letters are always near-black. */
-  var TONES = ['var(--c-orange)', 'var(--c-blue)', 'var(--c-cream)'];
+  var TONES = ['var(--c-orange)', 'var(--c-blue)', 'var(--c-cream)'], skipping = false;
   function tileWord(w, i, from){
     var idx = from ? w.cells.indexOf(from) : -1; if(idx < 0) idx = (w.cells.length - 1) / 2;
     var tone = TONES[i % 3];
-    /* a finished word is a plucked string; when Skip finishes them all, they ring one after another */
-    if(window.kcSound) setTimeout(function(){ kcSound.play('pluck', i); }, from ? 0 : i * 140);
+    /* a finished word is a plucked string (Skip plays the whole run itself, below) */
+    if(window.kcSound && !skipping) kcSound.play('pluck', i);
     w.cells.forEach(function(k, j){
       var c = cellsByKey[k];
       c._tones = c._tones || [];
@@ -237,11 +237,17 @@
 
   /* skip: fill every blank in, so the finished crossword shows */
   root.querySelector('.xw-skip').addEventListener('click', function(){
+    skipping = true;
+    var todo = [];   /* the words still unfinished, in order: only their notes ring */
+    words.forEach(function(w, i){ if(!w.capped) todo.push(i); });
     gaps.forEach(function(k){ var c = cellsByKey[k]; if(!c.classList.contains('filled')){ fill(c, c.dataset.l); } });
     tray.innerHTML = '';
     selected = null;
     root.classList.remove('has-pick');
     refresh();
+    skipping = false;
+    /* with sound on, the unfinished words' notes ring one after another, in order */
+    if(window.kcSound) todo.forEach(function(i, n){ setTimeout(function(){ kcSound.play('pluck', i); }, n * 150); });
   });
 
   /* hand-drawn lines, like a tic-tac-toe board drawn only where the words are: long wobbly strokes along the grid lines that touch a word square.  */
