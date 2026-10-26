@@ -14,21 +14,24 @@
 }
 
 /* Himalayan ridge: the outline of a reference mountain, traced and smoothed, rising on the right (no small foothill) */
-.reveal::before{
-  content:""; position:absolute; z-index:2; left:auto; right:var(--ridge-right); width:var(--ridge-w); bottom:calc(100% - 2px); height:var(--ridge-h); background:var(--logo-orange);
+/* the box the ridge and its snow live in: it sits on top of the orange scene (2px into it, so no seam shows), as tall as the snowfall, and clips them at the screen's edges */
+.ridge-clip{ position:absolute; z-index:2; left:0; right:0; bottom:calc(100% - 2px); height:calc(var(--ridge-h) * 2.4); overflow:hidden; pointer-events:none; }
+.ridge-clip::before{
+  content:""; position:absolute; z-index:2; left:auto; right:var(--ridge-right); width:var(--ridge-w); bottom:0; height:var(--ridge-h); background:var(--logo-orange);
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 220' preserveAspectRatio='none'%3E%3Cpath d='M0 216C40.0 216.0 214.7 216.2 300.0 216.0C385.3 215.8 568.0 215.0 640.0 214.5C712.0 214.0 800.0 213.0 840.0 212.0C880.0 211.0 916.7 209.1 940.0 207.0C963.3 204.9 997.0 199.6 1015.0 196.0C1033.0 192.4 1064.3 184.0 1075.0 180.0C1084.0 176.0 1089.1 170.4 1095.0 166.0C1100.9 161.6 1114.8 149.6 1119.5 147.0C1124.2 144.8 1127.2 146.9 1130.0 146.6C1132.8 146.2 1137.7 145.0 1140.5 143.8C1143.3 142.6 1148.2 138.4 1151.0 136.4C1153.8 134.4 1158.7 128.9 1161.5 126.5C1164.3 124.0 1169.2 117.9 1172.0 115.2C1174.8 112.5 1179.7 106.2 1182.5 103.3C1185.3 100.4 1190.2 93.7 1193.0 90.7C1195.8 87.7 1200.7 80.3 1203.5 77.5C1206.3 74.6 1211.2 67.8 1214.0 65.9C1216.8 64.1 1221.7 61.5 1224.5 61.5C1227.3 61.6 1232.2 64.6 1235.0 66.1C1237.8 67.6 1242.7 72.4 1245.5 74.3C1248.3 76.1 1253.2 80.2 1256.0 82.0C1258.8 83.8 1263.7 87.9 1266.5 89.7C1269.3 91.5 1274.2 96.0 1277.0 97.8C1279.8 99.6 1284.7 103.8 1287.5 104.9C1290.3 106.0 1295.2 107.3 1298.0 107.2C1300.8 107.0 1305.7 104.4 1308.5 103.8C1311.3 103.2 1316.2 101.6 1319.0 102.1C1321.8 102.6 1326.7 105.9 1329.5 107.8C1332.3 109.6 1337.2 115.7 1340.0 118.0C1342.8 120.3 1347.7 125.7 1350.5 127.8C1353.3 129.8 1358.2 133.7 1361.0 135.3C1363.8 137.0 1368.7 140.2 1371.5 141.9C1374.3 143.6 1379.2 147.6 1382.0 149.7C1384.8 151.7 1389.7 157.0 1392.5 159.4C1395.3 161.7 1400.2 167.6 1403.0 169.9C1405.8 172.3 1410.7 177.9 1413.5 179.8C1416.3 181.8 1421.2 185.6 1424.0 186.6C1426.8 187.5 1433.1 187.8 1434.5 188.0L1440 187V220H0Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 220' preserveAspectRatio='none'%3E%3Cpath d='M0 216C40.0 216.0 214.7 216.2 300.0 216.0C385.3 215.8 568.0 215.0 640.0 214.5C712.0 214.0 800.0 213.0 840.0 212.0C880.0 211.0 916.7 209.1 940.0 207.0C963.3 204.9 997.0 199.6 1015.0 196.0C1033.0 192.4 1064.3 184.0 1075.0 180.0C1084.0 176.0 1089.1 170.4 1095.0 166.0C1100.9 161.6 1114.8 149.6 1119.5 147.0C1124.2 144.8 1127.2 146.9 1130.0 146.6C1132.8 146.2 1137.7 145.0 1140.5 143.8C1143.3 142.6 1148.2 138.4 1151.0 136.4C1153.8 134.4 1158.7 128.9 1161.5 126.5C1164.3 124.0 1169.2 117.9 1172.0 115.2C1174.8 112.5 1179.7 106.2 1182.5 103.3C1185.3 100.4 1190.2 93.7 1193.0 90.7C1195.8 87.7 1200.7 80.3 1203.5 77.5C1206.3 74.6 1211.2 67.8 1214.0 65.9C1216.8 64.1 1221.7 61.5 1224.5 61.5C1227.3 61.6 1232.2 64.6 1235.0 66.1C1237.8 67.6 1242.7 72.4 1245.5 74.3C1248.3 76.1 1253.2 80.2 1256.0 82.0C1258.8 83.8 1263.7 87.9 1266.5 89.7C1269.3 91.5 1274.2 96.0 1277.0 97.8C1279.8 99.6 1284.7 103.8 1287.5 104.9C1290.3 106.0 1295.2 107.3 1298.0 107.2C1300.8 107.0 1305.7 104.4 1308.5 103.8C1311.3 103.2 1316.2 101.6 1319.0 102.1C1321.8 102.6 1326.7 105.9 1329.5 107.8C1332.3 109.6 1337.2 115.7 1340.0 118.0C1342.8 120.3 1347.7 125.7 1350.5 127.8C1353.3 129.8 1358.2 133.7 1361.0 135.3C1363.8 137.0 1368.7 140.2 1371.5 141.9C1374.3 143.6 1379.2 147.6 1382.0 149.7C1384.8 151.7 1389.7 157.0 1392.5 159.4C1395.3 161.7 1400.2 167.6 1403.0 169.9C1405.8 172.3 1410.7 177.9 1413.5 179.8C1416.3 181.8 1421.2 185.6 1424.0 186.6C1426.8 187.5 1433.1 187.8 1434.5 188.0L1440 187V220H0Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
 }
 :root{ --ridge-h:clamp(104px, 17.5vw, 254px); }   /* peaks stay a step below the tagline in height */
 @media (max-width:820px){ :root{ --ridge-h:clamp(150px, 45vw, 210px); } }   /* phones have the height to spare: bigger peaks and more sky for the snow */
 /* the ridge keeps the proportions of its drawing (1440 x 220): when it is taller than the screen's width allows, it grows wider than
    the screen and the left foothills run off the edge, so the peaks are only ever scaled, never stretched. */
-.reveal{ overflow-x:clip; --ridge-w:max(100%, calc(var(--ridge-h) * 6.5454)); --ridge-right:calc(-1 * max(0px, var(--ridge-w) * 0.15 - 28%)); }
+/* no overflow clip here: on iPhones a clipping box around the pinned scene made it shake while scrolling. The page itself (body) already clips sideways. */
+.reveal{ --ridge-w:max(100%, calc(var(--ridge-h) * 6.5454)); --ridge-right:calc(-1 * max(0px, var(--ridge-w) * 0.15 - 28%)); }
 /* wide screens: the ridge is a little wider than the screen and runs off its right edge, so the peaks stand clear of the copy beside the tagline */
 @media (min-width:1200px){ .reveal{ --ridge-w:max(104%, calc(var(--ridge-h) * 6.5454)); --ridge-right:-4%; } }
 @media (min-width:1200px) and (max-width:1360px){ .reveal{ --ridge-right:-8%; } }   /* the narrowest side-by-side screens: the peaks stand a little further right of the copy */
 
 /* snow on the ridge: cream patches that settle from the summit down, and flakes falling from the sky above the peaks */
-.ridge-snow{ position:absolute; z-index:3; left:auto; right:var(--ridge-right); width:var(--ridge-w); bottom:calc(100% - 2px); height:var(--ridge-h); pointer-events:none; }
+.ridge-snow{ position:absolute; z-index:3; left:auto; right:var(--ridge-right); width:var(--ridge-w); bottom:0; height:var(--ridge-h); pointer-events:none; }
 .ridge-caps{ position:absolute; inset:0; width:100%; height:100%; display:block; }
 .ridge-gl{ position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none; }   /* the snow shader (RidgeSnow.astro), over the SVG outlines it replaces */
 .ridge-flakes{ position:absolute; left:0; right:0; bottom:0; width:100%; height:calc(var(--ridge-h) * 2.4); display:block; }
@@ -51,15 +54,25 @@
 .reveal-pin{
   position:sticky; top:0;
   height:var(--vh, 100svh);
-  padding-top:62px; box-sizing:border-box;
-  display:grid; place-items:center;
   background:var(--logo-orange);
   overflow:hidden;
 }
+/* everything that moves: it fills the pin, and while the scene is pinned the script fixes it to the screen (so it holds perfectly still on iPhones) */
+.reveal-stage{
+  position:absolute; inset:0;
+  padding-top:62px; box-sizing:border-box;
+  /* the scene is as tall as the whole screen, but under a phone's toolbars less of it shows: centre the logo in the part that is always visible */
+  padding-bottom:max(0px, calc(var(--vh, 100svh) - 100svh));
+  display:grid; place-items:center;
+  overflow:hidden;
+}
+.js-reveal .reveal-stage.is-fixed{ position:fixed; top:0; right:0; bottom:auto; left:0; height:var(--vh, 100svh); }
 .reveal-logo{ overflow:visible;
   height:min(calc((100svh - 76px) / 1.7), 54vw); width:auto;
   display:block; will-change:transform;
 }
+/* phones: the width limits the logo, so it can take a little more of it (the dot's path around it still clears the screen's edges) */
+@media (max-width:600px){ .reveal-logo{ height:min(calc((100svh - 76px) / 1.7), 62vw); } }
 
 /* Services: the wordmark becomes a small blue pointer that travels the logo's edge and stops at each service */
 .ptr, .lbl, .svc-dots{ display:none; }
@@ -100,7 +113,7 @@
 
 @media (prefers-reduced-motion:reduce){
   .reveal{ height:auto; }
-  .reveal-pin{ position:static; height:min(100svh, 900px); }
+  .reveal-pin{ position:relative; height:min(100svh, 900px); }
 }
 
 /* the ampersand in the wordmark is the logo blue at all times */

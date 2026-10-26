@@ -166,6 +166,23 @@ Every push and pull request is built automatically, so a broken site shows up st
 
 The page tells the browser it may reach under the home indicator (`viewport-fit=cover` in `Layout.astro`), so the pinned scenes fill the whole screen in Safari instead of stopping above its bottom bar. Text and controls keep clear of the notch and the home indicator through the `env(safe-area-inset-*)` values in `tokens.css`, `header.css`, `sections.css`, `work.css` and `logo-reveal.css`. On a phone the temple's foot stands on the part of the screen that stays visible above the browser's toolbar, and its stone runs on below it, so it is neither floating nor cut off. The logo scene's easing (`logo-reveal.js`) is for a mouse only; on a touch screen it follows the scroll directly, and its positions are worked out from one measurement instead of being read back from the page every frame.
 
+### Debug switches
+
+Add `?debug=` to the address with any of these, separated by commas (for example `?debug=logo-still,no-vx`). A small badge then shows the page's frame rate (60 is smooth) and its slowest frame in the last second.
+
+| Switch | Turns off |
+|---|---|
+| `logo-still` | the logo scene following the scroll (it is drawn once and stays put) |
+| `work-still` | the Selected work row moving |
+| `no-vx` | the picture drifting inside each film frame |
+| `no-bg` | the contour lines moving behind the row |
+| `no-video` | the film previews playing (posters only) |
+| `no-clip` | the rounded mask on the film frames |
+| `no-fx` | birds, fireflies, petals, the record and the water loops |
+| `no-snow` | the snow shader and the falling flakes |
+
+To try them on a phone without deploying: `npm run build`, then `npx astro preview --host --port 4400`, and open `http://<this computer's Wi-Fi address>:4400/?debug=...` on a phone on the same Wi-Fi.
+
 ### B. Build on your computer and upload
 
 Run `npm run build`, then upload the contents of `dist/` to the hosting for the domain (GoDaddy's file manager or FTP), replacing the old files. This works for GoDaddy shared hosting; nothing runs automatically.

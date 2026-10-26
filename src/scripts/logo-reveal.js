@@ -10,7 +10,8 @@
     var still = sec.querySelector('.reveal-logo'); if(still) still.classList.add('is-complete');
   }
   if(!sec || !document.documentElement.classList.contains('js-reveal')) return;
-  var pin = sec.querySelector('.reveal-pin');
+  var pin = sec.querySelector('.reveal-stage');   /* the layer everything is placed in (inside the sticky orange pin); see LogoReveal.astro */
+  var isFixed = false;
   var logo = sec.querySelector('.reveal-logo');
   var finished = logo.querySelector('#rv-f');
   var logoDone = false;                     /* true once the finished logo is fully visible: only then does a click make it roar */
@@ -73,9 +74,10 @@
     var keep = logo.style.transform; logo.style.transform = '';
     var lr0 = logo.getBoundingClientRect(), pr0 = pin.getBoundingClientRect();
     rest = { l: lr0.left - pr0.left, t: lr0.top - pr0.top, w: lr0.width, h: lr0.height, pw: pin.clientWidth, ph: pin.clientHeight };
+    lastSig = '';   /* measured afresh: draw the next frame in full */
     logo.style.transform = keep;
   }
-  var glide = null, glideAt = 0, lastTint = null, lastDotPx = '';
+  var glide = null, glideAt = 0, lastTint = null, lastDotPx = '', lastSig = '';
   var fine = !!(window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches);   /* a touch screen already scrolls with its own momentum: easing on top of it only lags behind the page */
   function update(now){
     var __t0 = performance.now();
@@ -83,6 +85,10 @@
     var vh = window.__vh ? window.__vh() : window.innerHeight;
     readPaper();
     var sb = sec.getBoundingClientRect(), top = sb.top;
+    /* while the orange pin is stuck to the top, the stage is fixed to the screen instead of riding inside it: on iPhones the stuck pin shifts a pixel or two each
+       time the scene redraws, a fixed layer never does. Before and after, the stage sits inside the pin and scrolls with it, so the switch itself is invisible. */
+    var stuck = top <= 0 && sb.bottom >= vh;
+    if(stuck !== isFixed){ isFixed = stuck; pin.classList.toggle('is-fixed', stuck); }
     if(sb.bottom < -40 || top > vh + 40){ glide = null; return; }   /* off screen: leave the last frame as it is */
     var tNow = typeof now === 'number' ? now : performance.now();
     if(!fine || glide === null || Math.abs(top - glide) > vh * 1.2){ glide = top; }
@@ -100,10 +106,14 @@
 
     /* logo: glide to the centre and reveal; it keeps its full size */
     if(!rest) rebase();
-    var h = rest.h;
-    var centreTop = 62 + (vh - 62 - h) / 2;
-    var dy = Math.max(0, centreTop - TOP_GAP);
-    var m = ease(enter);
+    var dy = Math.max(0, rest.t - TOP_GAP);   /* where the logo comes to rest (centred in the visible part of the scene, see logo-reveal.css), measured */
+    /* with a mouse the logo glides to the centre as the orange comes up; on a touch screen it is already in place and simply rides in with the orange,
+       because any redraw while the scene scrolls in (before it is pinned) makes it shake on iPhones */
+    var m = fine ? ease(enter) : 1;
+    /* nothing to redraw if nothing has changed since the last frame: on a phone that is the whole of the scroll-in, so the scene is left untouched until it pins */
+    var sig = (isFixed ? 1 : 0) + '|' + m.toFixed(4) + '|' + alpha.toFixed(4) + '|' + Math.max(t, -1).toFixed(4) + '|' + vh + '|' + paperFor;
+    if(sig === lastSig && !needMeasure) return;
+    lastSig = sig;
     logo.style.transform = 'translateY(' + (-dy * (1 - m)) + 'px) scale(' + (0.9 + 0.1 * m) + ')';
     finished.setAttribute('opacity', alpha);
     var nowDone = alpha >= 0.97;
@@ -211,7 +221,8 @@
     if(window.__kcPerf){ var d = performance.now() - __t0; window.__kcPerf.push(d); }
   }
   function queue(){ if(!queued){ queued = true; requestAnimationFrame(update); } }
-  window.addEventListener('scroll', queue, { passive:true });
+  var dbgStill = !!(window.kcDebug && window.kcDebug.has('logo-still'));   /* test switch: the scene is drawn once and then ignores scrolling */
+  if(!dbgStill) window.addEventListener('scroll', queue, { passive:true });
   var lastW = window.innerWidth;
   window.addEventListener('resize', function(){
     if(window.innerWidth === lastW){ queue(); return; }   /* only the height changed: a phone's toolbars sliding away or back while scrolling. Nothing to measure again (and doing so each frame made the scene shake) */
