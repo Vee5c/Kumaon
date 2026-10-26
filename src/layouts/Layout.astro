@@ -36,6 +36,8 @@ const shareImage = Astro.site ? new URL('/images/og-image.png', Astro.site).href
       /* Arriving on a wave from another page: the screen starts covered in the wave's colour (ui.js then lets the wave carry on up and off). */
       try{ var kw = sessionStorage.getItem('kc-wave'); if(kw){ var ki = kw.lastIndexOf('|'); if(ki > 0 && Date.now() - Number(kw.slice(ki + 1)) < 6000){ kw = kw.slice(0, ki); } else { kw = null; sessionStorage.removeItem('kc-wave'); } } if(kw){ document.documentElement.classList.add('kc-arriving'); document.documentElement.style.setProperty('--arrive', kw); } }catch(e){}
       try{ if(!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) document.documentElement.classList.add('js-reveal'); }catch(e){}
+      /* test switches for phones: ?debug=logo-still,no-vx,... turns single pieces off, so their cost can be compared on a real device (see README, Debug switches) */
+      try{ var dq = new URLSearchParams(location.search).get('debug'); window.kcDebug = new Set(dq === null ? [] : ['on'].concat(dq.split(',').map(function(x){ return x.trim(); }).filter(Boolean))); window.kcDebug.forEach(function(f){ document.documentElement.classList.add('dbg-' + f); }); if(window.kcDebug.has('no-cover')){ var vm = document.querySelector('meta[name="viewport"]'); if(vm) vm.setAttribute('content', 'width=device-width, initial-scale=1'); } }catch(e){ window.kcDebug = new Set(); }
       /* One steady page height for the pinned scenes (--vh). On a phone the address bar slides away and back, so the height seen by the page
          changes; the scenes use the largest height seen, so they always fill the screen and the scroll maths never shifts mid-scroll. */
       (function(){

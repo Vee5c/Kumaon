@@ -28,10 +28,17 @@
       </a>
       <span class="note">WhatsApp preferred - quickest way to reach us</span>
     </div>
-    <div class="founder-row">
-      <button class="founder-photo" type="button" aria-label="See Vee's photo" aria-haspopup="dialog"><img src="/images/vee-founder.jpg" alt="Vee, founder of Kumaon & Co., with a guitar" width="72" height="72" decoding="async"></button>
-      <div class="founder-text">Founded &amp; shot by <strong>Vee</strong><svg class="founder-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
-    </div>
+    <!-- the people: who founded and shoots, and who designed the site. Each line opens that person's polaroid (Lightbox.astro) -->
+    <ul class="credits">
+      <li><button class="credit" type="button" data-lightbox="founder-lightbox" aria-haspopup="dialog">
+        <span class="credit-photo"><img src="/images/vee-founder.jpg" alt="" width="52" height="52" decoding="async"></span>
+        <span class="credit-text">Founded &amp; shot by <strong>Vee</strong></span><svg class="credit-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button></li>
+      <li><button class="credit is-aka" type="button" data-lightbox="designer-lightbox" aria-haspopup="dialog">
+        <span class="credit-photo"><img src="/images/aka-designer.jpg" alt="" width="52" height="52" loading="lazy" decoding="async"></span>
+        <span class="credit-text">Designed by <strong>Aka</strong></span><svg class="credit-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button></li>
+    </ul>
   </div>
 </section>
 

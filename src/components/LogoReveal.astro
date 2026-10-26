@@ -4,8 +4,11 @@ import RidgeSnow from './RidgeSnow.astro';
 ---
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="goo-h" x="-30%" y="-200%" width="160%" height="500%" color-interpolation-filters="sRGB"><feGaussianBlur id="goo-h-b" in="SourceGraphic" stdDeviation="0"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10"/></filter></svg>
 <section class="reveal" id="logo-reveal">
-  <RidgeSnow />
-  <div class="reveal-pin">
+  <!-- the mountain and its snow, in their own clipping box: they run off the screen's edges, and clipping them here (not around the whole scene) keeps the page from scrolling sideways without making the pinned scene shake on iPhones -->
+  <div class="ridge-clip" aria-hidden="true"><RidgeSnow /></div>
+  <!-- the pin holds only the orange; everything that moves sits in the stage, which is fixed to the screen while the scene is pinned (logo-reveal.js):
+       on iPhones a pinned layer that is redrawn on every scroll frame shakes, a fixed one does not -->
+  <div class="reveal-pin"><div class="reveal-stage">
     <LogoArtwork />
     <div class="wm-text" aria-hidden="true"><span class="l">K</span><span class="l">u</span><span class="l">m</span><span class="l">a</span><span class="l">o</span><span class="l">n</span><span class="l">&nbsp;</span><span class="l amp">&amp;</span><span class="l">&nbsp;</span><span class="l">C</span><span class="l">o</span><span class="l">.</span><span class="wm-dot"></span></div>
     <div class="wm-static" aria-hidden="true">Kumaon <span class="amp">&amp;</span> Co.</div>
@@ -14,6 +17,5 @@ import RidgeSnow from './RidgeSnow.astro';
     <article class="lbl"><h2>Music</h2><p>Music videos, podcasts and sound design. We start with how it sounds.</p></article>
     <article class="lbl"><h2>Marketing &amp; Design</h2><p>Reels and social content that keep a feed alive.</p></article>
     <ol class="svc-dots" aria-hidden="true"><li></li><li></li><li></li></ol>
-
-  </div>
+  </div></div>
 </section>

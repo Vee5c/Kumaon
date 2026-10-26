@@ -1,22 +1,22 @@
-/* Small UI behaviours: theme toggle, founder photo lightbox. */
+/* Small UI behaviours: theme toggle, the credits' polaroids. */
 (function(){
   var toggle = document.querySelector('.theme-toggle:not(.sound-btn)');
   if(toggle) toggle.addEventListener('click', toggleTheme);   /* toggleTheme() lives in js/theme.js */
 
-  var box = document.getElementById('founder-lightbox');
-  var photo = document.querySelector('.founder-photo');
-  if(box && photo){
-    var close = function(){ box.classList.remove('is-open'); photo.focus({ preventScroll:true }); };
-    var open = function(){ box.classList.add('is-open'); box.querySelector('.lightbox-close').focus(); };
-    photo.addEventListener('click', open);
-    var label = document.querySelector('.founder-text');
-    if(label) label.addEventListener('click', open);   /* the words open the photo too */
-    box.addEventListener('click', function(e){ if(!e.target.closest('.polaroid-links')) close(); });   /* the social links stays clickable */
+  /* the polaroids: anything with data-lightbox="<id>" (a credit's photo and its words) opens that photo; Escape, a click or the close button puts it away */
+  [].forEach.call(document.querySelectorAll('.lightbox'), function(box){
+    var openers = [].slice.call(document.querySelectorAll('[data-lightbox="' + box.id + '"]'));
+    if(!openers.length) return;
+    var from = null;
+    var close = function(){ box.classList.remove('is-open'); var back = from && from.tagName === 'BUTTON' ? from : openers[0]; back.focus({ preventScroll:true }); };
+    var open = function(e){ from = e.currentTarget; box.classList.add('is-open'); box.querySelector('.lightbox-close').focus(); };
+    openers.forEach(function(o){ o.addEventListener('click', open); });
+    box.addEventListener('click', function(e){ if(!e.target.closest('.polaroid-links a')) close(); });   /* the social links stay clickable */
     document.addEventListener('keydown', function(e){
       if(!box.classList.contains('is-open')) return;
       if(e.key === 'Escape'){ close(); return; }
       if(e.key !== 'Tab') return;
-      /* keep keyboard focus inside the open photo: the close button and the two links */
+      /* keep keyboard focus inside the open photo: the close button and any links */
       var items = [].slice.call(box.querySelectorAll('button, a[href]')).filter(function(n){ return n.offsetParent !== null; });
       if(!items.length) return;
       var first = items[0], last = items[items.length - 1];
@@ -24,7 +24,7 @@
       else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
       else if(!box.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
     });
-  }
+  });
 })();
 
 /* a refresh keeps the scroll position the browser remembers; a stray #hash in the address would pull it to that section instead */
@@ -325,3 +325,50 @@ document.querySelector('.skip')?.addEventListener('click', () => { document.getE
   }
 }
 
+
+/* ?debug=...: a small badge with the page's own frame rate (how often scripts get to run: 60 is smooth) and the slowest frame of the last second */
+if(window.kcDebug && window.kcDebug.size){
+  const b = document.createElement('div');
+  b.setAttribute('aria-hidden', 'true');
+  b.style.cssText = 'position:fixed;left:8px;top:calc(env(safe-area-inset-top, 0px) + 74px);z-index:9999;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,0.78);color:#fff;font:600 11px/1.35 ui-monospace,Menlo,monospace;pointer-events:none;white-space:pre';
+  document.body.appendChild(b);
+  const flags = [...window.kcDebug].filter((f) => f !== 'on').join(',') || 'none';
+  /* also the page height the pinned scenes use (--vh), the window's own height, and how many times --vh has changed since the page opened:
+     if that count climbs while you scroll, every pinned scene is being resized mid-scroll */
+  let vhChanges = 0;
+  addEventListener('vhchange', () => { vhChanges++; });
+  let frames = 0, worst = 0, last = performance.now(), mark = last;
+  const tick = (now) => {
+    frames++; worst = Math.max(worst, now - last); last = now;
+    if(now - mark >= 1000){
+      const vh = getComputedStyle(document.documentElement).getPropertyValue('--vh').trim();
+      b.textContent = 'fps ' + Math.round(frames * 1000 / (now - mark)) + '  worst ' + Math.round(worst) + 'ms\n'
+        + 'vh ' + vh + '  win ' + innerHeight + '  screen ' + screen.height + '  vh changes ' + vhChanges + '\n' + flags;
+      frames = 0; worst = 0; mark = now;
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/* the browser's own strips (a phone's status bar and the edge under its bottom bar) take their colour from the page's theme-color: keep it in step with what is
+   at the bottom of the screen (the blue water at the end of the page, the page's cream or dark everywhere else), so no pale strip shows below the blue */
+{
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const contact = document.getElementById('contact');
+  if(meta){
+    let last = '', queued = false;
+    const set = () => {
+      queued = false;
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const onWater = contact && scrollY + innerHeight > contact.offsetTop + innerHeight * 0.25;
+      const c = onWater ? (dark ? '#0077a6' : '#0086b8') : (dark ? '#1c1712' : '#efe6d3');
+      if(c !== last){ last = c; meta.setAttribute('content', c); }
+    };
+    const queue = () => { if(!queued){ queued = true; requestAnimationFrame(set); } };
+    addEventListener('scroll', queue, { passive:true });
+    addEventListener('resize', queue);
+    new MutationObserver(queue).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+    set();
+  }
+}

@@ -118,7 +118,22 @@ h1,h2,h3{ font-family:'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-s
 
 /* no rubber-band at the page ends, and the canvas behind it is the hero cream, never plain white */
 html{ background:var(--hero-bg); overscroll-behavior-y:none; }
+/* the home page ends in the blue water: the canvas behind and below the page is blue too, for any overscroll (the browser's own bottom strip is coloured by ui.js) */
+html:has(#contact){ background:var(--water) linear-gradient(var(--hero-bg), var(--hero-bg)) top left / 100% 50% no-repeat; }
 body{ overscroll-behavior-y:none; }
+
+/* test switches (?debug=...), see README: whole layers of the page can be turned off to find what holds the frame rate down */
+.dbg-no-anim *, .dbg-no-anim *::before, .dbg-no-anim *::after{ animation:none !important; transition:none !important; }
+.dbg-no-blur *{ -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+.dbg-no-layers *{ will-change:auto !important; }
+.dbg-hide-work #work, .dbg-hide-reveal #logo-reveal, .dbg-hide-contact #contact, .dbg-hide-contact .contact-river{ display:none !important; }
+/* the page-wide settings the bare test page does not have, one switch each: the body's sideways clip, the no-bounce setting, the logo scene's own clip,
+   Selected work sliding up over the logo scene, and the fixed header (no-cover, in Layout.astro, drops viewport-fit=cover) */
+html.dbg-no-bodyclip body{ overflow-x:visible !important; position:static !important; }
+html.dbg-no-overscroll, html.dbg-no-overscroll body{ overscroll-behavior:auto !important; }
+.dbg-no-revealclip .reveal{ overflow-x:visible !important; }
+.dbg-no-overlap .work{ margin-top:0 !important; }
+.dbg-no-header header.top{ display:none !important; }
 
 /* Approach and Let's make something: a step below the Selected work headline */
 :root{ --display-sm:calc(var(--display) * 0.72); }
